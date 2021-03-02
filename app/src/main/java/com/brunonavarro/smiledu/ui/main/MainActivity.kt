@@ -94,10 +94,13 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId){
             R.id.action_filter->{
-                item.icon = if (isCompleteFilter)
-                    ContextCompat.getDrawable(this, R.drawable.ic_is_task_complete)
-                else
-                    ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_24)
+                if (isCompleteFilter) {
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_is_task_complete)
+                    isCompleteFilter = false
+                }else{
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_24)
+                    isCompleteFilter = true
+                }
                 filter()
                 true
             }
@@ -107,14 +110,13 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
     fun filter(){
         val itemsFilter = mutableListOf<Task>()
-        itemsFilter.clear()
         mainViewModel.taskList.value?.forEach {
             if (!isCompleteFilter) {
-                if (it.isComplete != null && it.isComplete!!) {
+                if ((it.isComplete == null) || (it.isComplete != null && !it.isComplete!!)) {
                     itemsFilter.add(it)
                 }
             }else{
-                if (it.isComplete != null && !it.isComplete!!) {
+                if (it.isComplete != null && it.isComplete!!) {
                     itemsFilter.add(it)
                 }
             }
@@ -122,7 +124,6 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         taskAdapterView.value?.itemList = itemsFilter
         taskAdapterView.value?.itemList?.sortByDescending { it.id }
         taskAdapterView.value?.notifyDataSetChanged()
-        isCompleteFilter = true
     }
 
     fun showDialogAddTask(){
