@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="dialogTitle">18sp</dimen>
+    <dimen name="itemTaskOrderNumber">20sp</dimen>
+    <dimen name="activityTitle">18sp</dimen>
+    <dimen name="mainText">14sp</dimen>
+
+</resources>

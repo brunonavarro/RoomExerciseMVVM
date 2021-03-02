@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Smiledu Exam</string>
+    <string name="label"> </string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="dialog_title">%1s actividad</string>
+    <string name="dialog_title_example">Nueva actividad</string>
+    <string name="activity_title_hint">Titulo</string>
+    <string name="activity_body_hint">Contenido</string>
+    <string name="activity_finish_hint">Finaliza</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="order_number_example">01</string>
+    <string name="activity_title_example">Tarea de matemáticas</string>
+    <string name="activity_body_example">Resolver problema sobre teorema de pitagoras...</string>
+    <string name="activity_create_example">Creada: 17/02</string>
+    <string name="activity_create_value">Creada: %1s</string>
+    <string name="activity_finish_example">Finaliza: 22/02</string>
+    <string name="activity_finish_value">Finaliza: %1s</string>
+    <string name="action_filter_complete_task">Tareas completas</string>
+    <string name="diary">Agenda</string>
+    <string name="action_remove">Remover</string>
+    <string name="action_edit">Editar</string>
+    <string name="error_get_task_list">No se pudo obtener la lista de tareas</string>
+    <string name="error_get_task">No se pudo obtener la información de la tarea</string>
+    <string name="error_delete_task">No se pudo borrar la tarea</string>
+    <string name="error_update_task">No se pudo actualizar la tarea</string>
+    <string name="create_task_success">Tarea creada correctamente</string>
+    <string name="new_task">Nueva</string>
+    <string name="error_empty_field">Error campo requerido</string>
+</resources>

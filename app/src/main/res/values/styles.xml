@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="dialogTitle" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/blackText</item>
+        <item name="android:textSize">@dimen/dialogTitle</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="inputText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="mainText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">@dimen/mainText</item>
+    </style>
+
+    <style name="itemTaskOrderNumber" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textSize">@dimen/itemTaskOrderNumber</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="activityTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textSize">@dimen/activityTitle</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>
