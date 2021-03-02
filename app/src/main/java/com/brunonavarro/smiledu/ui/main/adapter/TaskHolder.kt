@@ -27,6 +27,8 @@ class TaskHolder(
         binding.activityCreate.text = data.createDate.toString()
         binding.activityFinish.text = data.finishDate.toString()
 
+        binding.isCompleteCheckBox.isChecked = data.isComplete ?: false
+
         binding.isCompleteCheckBox.setOnCheckedChangeListener { compoundButton, b ->
             listener.onIsCompleteTask(data, b)
         }

@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.data.repository.taskRepository.TaskRepository
 import com.brunonavarro.smiledu.util.Constants.ERROR_GET_TASK_LIST
+import com.brunonavarro.smiledu.util.Constants.ERROR_INSERT_TASK
+import com.brunonavarro.smiledu.util.Constants.ERROR_UPDATE_TASK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,13 +44,13 @@ class MainViewModel(
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
             val result = taskRepository.addTask(task)
-            if (result.success && !result.taskList.isNullOrEmpty()){
+            if (result.success){
                 taskList.postValue(result.taskList)
                 mainListener?.showProgressBar(false)
                 mainListener?.createTaskSuccess()
             }else{
                 mainListener?.showProgressBar(false)
-                mainListener?.errorMessage(ERROR_GET_TASK_LIST, null)
+                mainListener?.errorMessage(ERROR_INSERT_TASK, null)
             }
         }
     }
@@ -57,13 +59,13 @@ class MainViewModel(
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
             val result = taskRepository.updateTask(task)
-            if (result.success && !result.taskList.isNullOrEmpty()){
+            if (result.success){
                 taskList.postValue(result.taskList)
                 mainListener?.showProgressBar(false)
                 mainListener?.createTaskSuccess()
             }else{
                 mainListener?.showProgressBar(false)
-                mainListener?.errorMessage(ERROR_GET_TASK_LIST, null)
+                mainListener?.errorMessage(ERROR_UPDATE_TASK, null)
             }
         }
     }
