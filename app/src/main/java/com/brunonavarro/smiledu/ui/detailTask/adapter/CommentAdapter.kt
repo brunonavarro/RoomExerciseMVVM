@@ -1,5 +1,6 @@
 package com.brunonavarro.smiledu.ui.detailTask.adapter
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +9,10 @@ import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ItemCommentBinding
 import com.brunonavarro.smiledu.databinding.ItemTaskBinding
 
-class CommentAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CommentAdapter(
+    val listener: CommentListener,
+    val activity: Activity
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemList = mutableListOf<Comment>()
 
@@ -18,7 +22,7 @@ class CommentAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),listener, activity
         )
     }
 

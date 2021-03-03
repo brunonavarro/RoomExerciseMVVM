@@ -47,4 +47,7 @@
     <string name="format_date_finish_task">%1s/%2s/%3s</string>
     <string name="create_comment_success">Se agregó tu comentario</string>
     <string name="empty_list">NO TIENES TAREAS EN AGENDA</string>
+    <string name="edit_comment">Editar</string>
+    <string name="remove_comment">Eliminar</string>
+    <string name="dialog_delete_comment_message">Recuerde que no se podrá recuperar su comentario.</string>
 </resources>

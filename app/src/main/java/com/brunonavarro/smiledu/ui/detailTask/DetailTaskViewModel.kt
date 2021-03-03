@@ -61,4 +61,13 @@ class DetailTaskViewModel(
             listener?.createTaskSuccess()
         }
     }
+
+    fun deleteComment(comment: Comment){
+        CoroutineScope(Dispatchers.Main).launch {
+            listener?.showProgressBar(true)
+            detailTaskRepository.removeComment(comment)
+            listener?.showProgressBar(false)
+            listener?.createTaskSuccess()
+        }
+    }
 }

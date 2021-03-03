@@ -9,4 +9,5 @@ interface DetailTaskInterface {
     suspend fun removeTask(task: Task)
     suspend fun addComment(comment: Comment)
     suspend fun getComments(taskId: Int): List<Comment>
+    suspend fun removeComment(comment: Comment)
 }

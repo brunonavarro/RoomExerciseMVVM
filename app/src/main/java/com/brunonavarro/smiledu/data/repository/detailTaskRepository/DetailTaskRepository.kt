@@ -46,4 +46,10 @@ class DetailTaskRepository(
         }
     }
 
+    override suspend fun removeComment(comment: Comment) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.commentDao().deleteComment(comment)
+        }
+    }
+
 }
