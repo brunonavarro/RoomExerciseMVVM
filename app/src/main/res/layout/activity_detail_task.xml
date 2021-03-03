@@ -37,6 +37,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     tools:text="@string/activity_title_example"
+                    android:maxLines="1"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="24sp"

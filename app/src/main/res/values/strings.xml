@@ -41,8 +41,9 @@
     <string name="comment_label_value">Comentarios (%1s)</string>
     <string name="comment_example">Este es un commentario.</string>
     <string name="edit_task">Editar</string>
-    <string name="dialog_delete_title">Eliminar actividad</string>
-    <string name="dialog_delete_message">¿Esta seguro de eliminar esta tarea?</string>
+    <string name="dialog_delete_title_value">¿Seguro quieres eliminar %1s?</string>
+    <string name="dialog_delete_title_example">¿Seguro quieres eliminar tarea de matemática?</string>
+    <string name="dialog_delete_message">Recuerda. Se van a borrar todos los comentarios.</string>
     <string name="format_date_finish_task">%1s/%2s/%3s</string>
     <string name="create_comment_success">Se agregó tu comentario</string>
     <string name="empty_list">NO TIENES TAREAS EN AGENDA</string>

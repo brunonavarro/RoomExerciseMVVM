@@ -206,8 +206,12 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware, DetailTaskListener
         val showView: View =
             LayoutInflater.from(this).inflate(R.layout.view_dialog_delete_activity, null)
 
+
         val cancelButton: Button = showView.findViewById(R.id.cancelButton)
         val acceptButton: Button = showView.findViewById(R.id.acceptButton)
+        val dialogTitle: TextView = showView.findViewById(R.id.dialogTitle)
+
+        dialogTitle.text = getString(R.string.dialog_delete_title_value, mainViewModel.task.value?.title)
 
         cancelButton.setOnClickListener { dialogTask?.dismiss() }
 
