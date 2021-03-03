@@ -40,6 +40,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
     lateinit var currentTask: Task
     var isEditComment = MutableLiveData<Boolean>(false)
+    var selectedComment = MutableLiveData<Comment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,20 +76,24 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                     val comment = Comment()
                     comment.message = binding.commentEditText.text.toString().trim()
                     comment.taskId = taskId
-                    comment.id = commentAdapterView.value?.itemList!!.size + 1
 
                     if (!isEditComment.value!!) {
+                        comment.id = commentAdapterView.value?.itemList!!.size + 1
                         mainViewModel.addComment(comment)
                         commentAdapterView.value?.itemList?.add(comment)
                         commentAdapterView.value?.notifyDataSetChanged()
                         updateCountComment(commentAdapterView.value?.itemList!!.size)
                         isEditComment.value = false
                     }else{
+                        comment.id = selectedComment.value?.id
                         mainViewModel.comments.value?.firstOrNull { it.id == comment.id }?.let {
                             it.id = comment.id
                             it.message = comment.message
                             it.taskId = comment.taskId
                         }
+                        commentAdapterView.value?.itemList = mainViewModel.comments.value!!
+                        commentAdapterView.value?.notifyDataSetChanged()
+                        mainViewModel.updateComment(comment)
                         updateCountComment(commentAdapterView.value?.itemList!!.size)
                         isEditComment.value = false
                     }
@@ -299,6 +304,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
     override fun onClickEdit(comment: Comment) {
         isEditComment.value = true
+        selectedComment.value = comment
         binding.commentEditText.setText(comment.message)
         binding.commentEditText.selectAll()
         binding.commentEditText.requestFocus()

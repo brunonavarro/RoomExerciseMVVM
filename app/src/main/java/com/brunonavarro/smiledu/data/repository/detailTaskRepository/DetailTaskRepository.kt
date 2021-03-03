@@ -52,4 +52,10 @@ class DetailTaskRepository(
         }
     }
 
+    override suspend fun updateComment(comment: Comment) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.commentDao().updateComment(comment)
+        }
+    }
+
 }

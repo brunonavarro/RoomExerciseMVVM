@@ -70,4 +70,12 @@ class DetailTaskViewModel(
             listener?.createTaskSuccess()
         }
     }
+
+    fun updateComment(comment: Comment){
+        CoroutineScope(Dispatchers.Main).launch {
+            listener?.showProgressBar(true)
+            detailTaskRepository.updateComment(comment)
+            listener?.showProgressBar(false)
+        }
+    }
 }
