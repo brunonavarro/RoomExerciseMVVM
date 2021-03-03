@@ -1,5 +1,6 @@
 package com.brunonavarro.smiledu.data.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -8,7 +9,12 @@ import androidx.room.PrimaryKey
         parentColumns = ["id"], childColumns = ["taskId"],
         onDelete = ForeignKey.CASCADE)])
 data class Comment(
-    @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    val taskId: Int? = null,
-    var message: String? = null
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Int? = null,
+    @ForeignKey(
+        entity = Task::class,
+        parentColumns = ["id"],
+        childColumns = ["taskId"],
+        onDelete = ForeignKey.CASCADE)
+    @ColumnInfo(name = "taskId") var taskId: Int? = null,
+    @ColumnInfo(name = "message") var message: String? = null
 )

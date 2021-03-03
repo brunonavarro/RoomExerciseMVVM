@@ -1,103 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:elevation="2dp"
-    app:cardCornerRadius="20dp">
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="task"
+            type="com.brunonavarro.smiledu.data.entity.Task" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/gray_super_light">
 
-        <CheckBox
-            android:id="@+id/isCompleteCheckBox"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.MaterialComponents.CardView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/activityTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/activityTitle" />
-
-        <TextView
-            android:id="@+id/activityTitle"
-            style="@style/activityTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/activity_title_example" />
-
-        <TextView
-            android:id="@+id/activityBody"
-            style="@style/mainText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="10dp"
-            android:maxLines="2"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="10dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp"
+            app:cardMaxElevation="10dp"
+            android:background="@color/white"
+            app:strokeColor="@color/gray_super_light"
+            app:strokeWidth="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/activityTitle"
-            app:layout_constraintTop_toBottomOf="@+id/activityTitle"
-            tools:text="@string/activity_body_example" />
-
-        <TextView
-            android:id="@+id/activityCreate"
-            style="@style/mainText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="10dp"
-            android:maxLines="2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/activityTitle"
-            app:layout_constraintTop_toBottomOf="@+id/activityBody"
-            tools:text="@string/activity_create_example" />
-
-        <TextView
-            android:id="@+id/activityFinish"
-            style="@style/mainText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="10dp"
-            android:maxLines="2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/activityBody"
-            app:layout_constraintTop_toBottomOf="@+id/activityBody"
-            tools:text="@string/activity_finish_value" />
-
-        <View
-            android:id="@+id/verticalDivider"
-            android:layout_width="1dip"
-            android:layout_height="0dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/orderNumber"
-            style="@style/itemTaskOrderNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/verticalDivider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/order_number_example" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="62dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/isCompleteCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/activityTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/activityTitle" />
+
+                <TextView
+                    android:id="@+id/activityTitle"
+                    style="@style/activityTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@{task.title}"
+                    app:layout_constraintStart_toStartOf="@+id/guideline2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/activity_title_example" />
+
+                <TextView
+                    android:id="@+id/activityBody"
+                    style="@style/mainText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="10dp"
+                    android:maxLines="2"
+                    android:text="@{task.body}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/activityTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/activityTitle"
+                    tools:text="@string/activity_body_example" />
+
+                <TextView
+                    android:id="@+id/activityCreate"
+                    style="@style/mainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="2"
+                    android:text="@{@string/activity_create_value(task.createDate)}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/activityTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/activityBody"
+                    tools:text="@string/activity_create_example" />
+
+                <TextView
+                    android:id="@+id/activityFinish"
+                    style="@style/mainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="2"
+                    android:text="@{@string/activity_finish_value(task.finishDate)}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/activityBody"
+                    app:layout_constraintTop_toBottomOf="@+id/activityBody"
+                    tools:text="@string/activity_finish_value" />
+
+                <View
+                    android:id="@+id/verticalDivider"
+                    android:layout_width="1dip"
+                    android:layout_height="0dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/orderNumber"
+                    style="@style/itemTaskOrderNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/verticalDivider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/order_number_example" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="62dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+</layout>

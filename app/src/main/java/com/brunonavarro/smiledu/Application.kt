@@ -4,8 +4,10 @@ import android.app.Application
 import android.content.Context
 import androidx.room.RoomDatabase
 import com.brunonavarro.smiledu.data.database.AppDatabase
+import com.brunonavarro.smiledu.data.repository.detailTaskRepository.DetailTaskRepository
 import com.brunonavarro.smiledu.data.repository.taskRepository.TaskRepository
 import com.brunonavarro.smiledu.data.repository.taskRepository.dao.TaskDAO
+import com.brunonavarro.smiledu.ui.detailTask.DetailTaskViewModelFactory
 import com.brunonavarro.smiledu.ui.main.MainViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -26,5 +28,8 @@ class Application: Application(), KodeinAware {
 
         bind() from singleton { TaskRepository(instance()) }
         bind() from provider { MainViewModelFactory(instance()) }
+
+        bind() from singleton { DetailTaskRepository(instance()) }
+        bind() from provider { DetailTaskViewModelFactory(instance()) }
     }
 }

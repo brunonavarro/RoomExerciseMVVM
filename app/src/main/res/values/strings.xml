@@ -19,7 +19,7 @@
     <string name="cancel">Cancelar</string>
     <string name="order_number_example">01</string>
     <string name="activity_title_example">Tarea de matemáticas</string>
-    <string name="activity_body_example">Resolver problema sobre teorema de pitagoras...</string>
+    <string name="activity_body_example">Resolver problema sobre teorema de pitagoras…</string>
     <string name="activity_create_example">Creada: 17/02</string>
     <string name="activity_create_value">Creada: %1s</string>
     <string name="activity_finish_example">Finaliza: 22/02</string>
@@ -35,4 +35,15 @@
     <string name="create_task_success">Tarea creada correctamente</string>
     <string name="new_task">Nueva</string>
     <string name="error_empty_field">Error campo requerido</string>
+    <string name="error_empty_list">No hay tareas</string>
+    <string name="comment_label_example">Comentarios (2)</string>
+    <string name="comment_hint">Escribe tu comentario aquí…</string>
+    <string name="comment_label_value">Comentarios (%1s)</string>
+    <string name="comment_example">Este es un commentario.</string>
+    <string name="edit_task">Editar</string>
+    <string name="dialog_delete_title">Eliminar actividad</string>
+    <string name="dialog_delete_message">¿Esta seguro de eliminar esta tarea?</string>
+    <string name="format_date_finish_task">%1s/%2s/%3s</string>
+    <string name="create_comment_success">Se agregó tu comentario</string>
+    <string name="empty_list">NO TIENES TAREAS EN AGENDA</string>
 </resources>

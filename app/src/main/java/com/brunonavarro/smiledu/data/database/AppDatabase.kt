@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.data.entity.Task
+import com.brunonavarro.smiledu.data.repository.detailTaskRepository.dao.CommentDAO
 import com.brunonavarro.smiledu.data.repository.taskRepository.dao.TaskDAO
 import org.kodein.di.KodeinProperty
 
@@ -13,6 +14,7 @@ import org.kodein.di.KodeinProperty
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun taskDao(): TaskDAO
+    abstract fun commentDao(): CommentDAO
 
     companion object{
         private var INSTANCE: AppDatabase? = null

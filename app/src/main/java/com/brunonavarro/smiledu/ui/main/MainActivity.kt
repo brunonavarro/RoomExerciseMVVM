@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -23,6 +22,8 @@ import com.brunonavarro.smiledu.databinding.ActivityMainBinding
 import com.brunonavarro.smiledu.ui.main.adapter.TaskAdapter
 import com.brunonavarro.smiledu.ui.main.adapter.TaskListener
 import com.brunonavarro.smiledu.util.Constants
+import com.brunonavarro.smiledu.util.datePicker.DatePickerFragment
+import com.brunonavarro.smiledu.util.validDateInput
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -38,12 +39,11 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     lateinit var binding: ActivityMainBinding
 
     var taskAdapterView =  MutableLiveData<TaskAdapter>()
-    var isCompleteFilter = false
+    var isFilterActive = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
         mainViewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
@@ -53,10 +53,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             showDialogAddTask()
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
         }
-
 
         configAdapter()
         observable()
@@ -65,7 +62,12 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     fun observable(){
         mainViewModel.taskList.observeForever {
             if (!it.isNullOrEmpty()){
+                binding.emptyList.visibility = View.GONE
                 it.sortByDescending { it.id }
+                taskAdapterView.value?.itemList = it
+                taskAdapterView.value?.notifyDataSetChanged()
+            }else {
+                binding.emptyList.visibility = View.VISIBLE
                 taskAdapterView.value?.itemList = it
                 taskAdapterView.value?.notifyDataSetChanged()
             }
@@ -94,12 +96,12 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId){
             R.id.action_filter->{
-                if (isCompleteFilter) {
-                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_is_task_complete)
-                    isCompleteFilter = false
-                }else{
+                if (!isFilterActive) {
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_24)
-                    isCompleteFilter = true
+                    isFilterActive = true
+                }else{
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_is_task_complete)
+                    isFilterActive = false
                 }
                 filter()
                 true
@@ -109,20 +111,17 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     }
 
     fun filter(){
-        val itemsFilter = mutableListOf<Task>()
-        mainViewModel.taskList.value?.forEach {
-            if (!isCompleteFilter) {
-                if ((it.isComplete == null) || (it.isComplete != null && !it.isComplete!!)) {
-                    itemsFilter.add(it)
-                }
-            }else{
-                if (it.isComplete != null && it.isComplete!!) {
-                    itemsFilter.add(it)
-                }
-            }
+        var itemsFilter = mutableListOf<Task>()
+        val itemListAdapterCopy = mainViewModel.taskList.value
+
+        if (!isFilterActive){
+            taskAdapterView.value?.itemList = itemListAdapterCopy!!
+            taskAdapterView.value?.itemList?.sortByDescending { it.id }
+        }else{
+            itemsFilter = taskAdapterView.value?.itemList?.filter { it.isComplete }?.toMutableList()!!
+            taskAdapterView.value?.itemList = itemsFilter
+            taskAdapterView.value?.itemList?.sortByDescending { it.id }
         }
-        taskAdapterView.value?.itemList = itemsFilter
-        taskAdapterView.value?.itemList?.sortByDescending { it.id }
         taskAdapterView.value?.notifyDataSetChanged()
     }
 
@@ -144,14 +143,18 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
         cancelButton.setOnClickListener { dialogTask?.dismiss() }
 
+        finishTask.setOnClickListener {
+            showPicketDate(finishTask)
+        }
+
         acceptButton.setOnClickListener {
             val task = Task()
-            if (validForm(titleTask, bodyTask, finishTask)){
+            if (validForm(titleTask, bodyTask, finishTask!!)){
                 val formatDate = SimpleDateFormat("dd/mm/yyyy", Locale.getDefault())
 
                 task.title = titleTask.text.toString().trim()
                 task.body = bodyTask.text.toString().trim()
-                task.finishDate = finishTask.text.toString().trim()
+                task.finishDate = finishTask?.text.toString().trim()
                 task.createDate = formatDate.format(Date()).toString()
                 task.id = taskAdapterView.value?.itemList!!.size + 1
 
@@ -160,6 +163,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
                 val items = taskAdapterView.value?.itemList
                 items?.sortByDescending { it.id }
                 taskAdapterView.value?.itemList = items!!.toMutableList()
+                mainViewModel.taskList.value = taskAdapterView.value?.itemList
                 taskAdapterView.value?.notifyDataSetChanged()
 
                 dialogTask?.dismiss()
@@ -173,7 +177,19 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         dialogTask.show()
     }
 
-    fun validForm(titleTask: EditText, bodyTask: EditText, finishTask: EditText): Boolean{
+    private fun showPicketDate(finishTask: EditText) {
+        val datePicker = DatePickerFragment{day, month, year -> onDateSelected(day, month, year, finishTask) }
+        datePicker.show(supportFragmentManager, "datePicker")
+    }
+
+    fun onDateSelected(day:Int, month: Int, year:Int, finishTask: EditText){
+        finishTask.setText(getString(R.string.format_date_finish_task,
+            if (day < 10) "0$day" else day.toString(),
+            if (month+1 < 10 ) "0${month+1}" else (month+1).toString(),
+            year.toString() ))
+    }
+
+    private fun validForm(titleTask: EditText, bodyTask: EditText, finishTask: EditText): Boolean{
         if (titleTask.text.isNullOrEmpty()){
             titleTask.error = getString(R.string.error_empty_field)
             return false
@@ -188,8 +204,13 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     }
 
     override fun onIsCompleteTask(task: Task, isComplete: Boolean) {
-        task.isComplete = isComplete
-        mainViewModel.updateTask(task)
+        mainViewModel.taskList.value?.forEach {
+            if (it.id == task.id){
+                task.isComplete = isComplete
+                it.isComplete = isComplete
+                mainViewModel.updateTask(task)
+            }
+        }
     }
 
     override fun showProgressBar(isShow: Boolean) {
@@ -218,9 +239,17 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
             Constants.ERROR_UPDATE_TASK ->{
                 Toast.makeText(this, getString(R.string.error_update_task), Toast.LENGTH_SHORT).show()
             }
+            Constants.ERROR_EMPTY_LIST ->{
+                Toast.makeText(this, getString(R.string.error_empty_list), Toast.LENGTH_SHORT).show()
+            }
             else -> {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        mainViewModel.getTasks()
     }
 }

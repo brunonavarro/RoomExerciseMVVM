@@ -2,6 +2,8 @@ package com.brunonavarro.smiledu.data.repository.taskRepository.dao
 
 import androidx.room.*
 import com.brunonavarro.smiledu.data.entity.Task
+import io.reactivex.Completable
+import io.reactivex.Maybe
 
 @Dao
 interface TaskDAO {

@@ -15,6 +15,29 @@
         <item name="android:textSize">@dimen/mainText</item>
     </style>
 
+    <style name="emptyListText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textSize">@dimen/emptyListText</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="detailText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/blackText</item>
+        <item name="android:textSize">@dimen/mainText</item>
+    </style>
+
+    <style name="commentLabel" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/blackText</item>
+        <item name="android:textSize">@dimen/mainText</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="input" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">@color/gray_light</item>
+        <item name="android:textSize">@dimen/mainText</item>
+        <item name="android:textColor">@color/blackText</item>
+    </style>
+
     <style name="itemTaskOrderNumber" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/gray_dark</item>
         <item name="android:textSize">@dimen/itemTaskOrderNumber</item>

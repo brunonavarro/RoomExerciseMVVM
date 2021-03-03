@@ -6,11 +6,12 @@
         android:name=".Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/label"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmileduExam">
-        <activity android:name=".ui.detailTask.DetailTaskActivity"/>
+        <activity android:name=".ui.detailTask.DetailTaskActivity"
+            android:theme="@style/Theme.SmileduExam.NoActionBar"/>
         <activity
             android:name=".ui.main.MainActivity"
             android:theme="@style/Theme.SmileduExam.NoActionBar">

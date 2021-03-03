@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.data.repository.taskRepository.TaskRepository
+import com.brunonavarro.smiledu.util.Constants.ERROR_EMPTY_LIST
 import com.brunonavarro.smiledu.util.Constants.ERROR_GET_TASK_LIST
 import com.brunonavarro.smiledu.util.Constants.ERROR_INSERT_TASK
 import com.brunonavarro.smiledu.util.Constants.ERROR_UPDATE_TASK
@@ -17,9 +18,6 @@ class MainViewModel(
 
     var taskList = MutableLiveData<MutableList<Task>>()
 
-    var taskListComplete = MutableLiveData<MutableList<Task>>()
-    var taskListInComplete = MutableLiveData<MutableList<Task>>()
-
     var mainListener: MainListener? = null
 
     init {
@@ -29,44 +27,25 @@ class MainViewModel(
     fun getTasks(){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            val result = taskRepository.getTasks()
-            if (result.success && !result.taskList.isNullOrEmpty()){
-                taskList.postValue(result.taskList)
-                mainListener?.showProgressBar(false)
-            }else{
-                mainListener?.showProgressBar(false)
-                mainListener?.errorMessage(ERROR_GET_TASK_LIST, null)
-            }
+            taskList.postValue(taskRepository.getTasks().toMutableList())
+            mainListener?.showProgressBar(false)
         }
     }
 
     fun addTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            val result = taskRepository.addTask(task)
-            if (result.success){
-                taskList.postValue(result.taskList)
-                mainListener?.showProgressBar(false)
-                mainListener?.createTaskSuccess()
-            }else{
-                mainListener?.showProgressBar(false)
-                mainListener?.errorMessage(ERROR_INSERT_TASK, null)
-            }
+            taskRepository.addTask(task)
+            mainListener?.showProgressBar(false)
+            mainListener?.createTaskSuccess()
         }
     }
 
     fun updateTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            val result = taskRepository.updateTask(task)
-            if (result.success){
-                taskList.postValue(result.taskList)
-                mainListener?.showProgressBar(false)
-                mainListener?.createTaskSuccess()
-            }else{
-                mainListener?.showProgressBar(false)
-                mainListener?.errorMessage(ERROR_UPDATE_TASK, null)
-            }
+            taskRepository.updateTask(task)
+            mainListener?.showProgressBar(false)
         }
     }
 }

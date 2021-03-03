@@ -5,5 +5,6 @@
     <dimen name="itemTaskOrderNumber">20sp</dimen>
     <dimen name="activityTitle">18sp</dimen>
     <dimen name="mainText">14sp</dimen>
+    <dimen name="emptyListText">28sp</dimen>
 
 </resources>

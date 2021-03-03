@@ -5,6 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray_super_light"
         tools:context=".ui.main.MainActivity">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -15,6 +16,7 @@
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:title=" "
                 app:menu="@menu/menu_main"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary" >
 
@@ -55,6 +57,16 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@drawable/ic_add_24" />
+
+        <TextView
+            android:id="@+id/emptyList"
+            style="@style/emptyListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/empty_list"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
