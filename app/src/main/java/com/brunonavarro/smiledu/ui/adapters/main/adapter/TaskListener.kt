@@ -1,4 +1,4 @@
-package com.brunonavarro.smiledu.ui.main.adapter
+package com.brunonavarro.smiledu.ui.adapters.main.adapter
 
 import com.brunonavarro.smiledu.data.entity.Task
 

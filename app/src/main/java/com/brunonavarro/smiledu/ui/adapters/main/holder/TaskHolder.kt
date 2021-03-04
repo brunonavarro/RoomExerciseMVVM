@@ -1,15 +1,12 @@
-package com.brunonavarro.smiledu.ui.main.adapter
+package com.brunonavarro.smiledu.ui.adapters.main.holder
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ItemTaskBinding
+import com.brunonavarro.smiledu.ui.adapters.main.adapter.TaskListener
 import com.brunonavarro.smiledu.ui.detailTask.DetailTaskActivity
-import java.text.SimpleDateFormat
-import java.util.*
 
 class TaskHolder(
     val binding: ItemTaskBinding,

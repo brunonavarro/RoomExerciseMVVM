@@ -1,11 +1,11 @@
-package com.brunonavarro.smiledu.ui.main.adapter
+package com.brunonavarro.smiledu.ui.adapters.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ItemTaskBinding
+import com.brunonavarro.smiledu.ui.adapters.main.holder.TaskHolder
 
 class TaskAdapter(var listener: TaskListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -13,12 +13,12 @@ class TaskAdapter(var listener: TaskListener): RecyclerView.Adapter<RecyclerView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return TaskHolder(
-            ItemTaskBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            listener
+                ItemTaskBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                ),
+                listener
         )
     }
 

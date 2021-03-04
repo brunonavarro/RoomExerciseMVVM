@@ -1,4 +1,4 @@
-package com.brunonavarro.smiledu.ui.detailTask
+package com.brunonavarro.smiledu.viewModel.detailTask
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

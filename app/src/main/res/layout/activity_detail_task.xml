@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.brunonavarro.smiledu.ui.detailTask.DetailTaskViewModel" />
+            type="com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

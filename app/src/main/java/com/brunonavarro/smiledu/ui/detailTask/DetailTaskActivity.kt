@@ -16,15 +16,16 @@ import com.brunonavarro.smiledu.R
 import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ActivityDetailTaskBinding
-import com.brunonavarro.smiledu.ui.detailTask.adapter.CommentAdapter
-import com.brunonavarro.smiledu.ui.detailTask.adapter.CommentListener
+import com.brunonavarro.smiledu.ui.adapters.detailTask.adapter.CommentAdapter
+import com.brunonavarro.smiledu.ui.adapters.detailTask.adapter.CommentListener
 import com.brunonavarro.smiledu.util.Constants
 import com.brunonavarro.smiledu.util.datePicker.DatePickerFragment
 import com.brunonavarro.smiledu.util.validDateInput
+import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModel
+import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModelFactory
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
-import java.text.FieldPosition
 
 class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         DetailTaskListener, CommentListener {

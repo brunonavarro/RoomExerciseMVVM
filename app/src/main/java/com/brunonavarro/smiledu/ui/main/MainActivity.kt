@@ -19,11 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.brunonavarro.smiledu.R
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ActivityMainBinding
-import com.brunonavarro.smiledu.ui.main.adapter.TaskAdapter
-import com.brunonavarro.smiledu.ui.main.adapter.TaskListener
+import com.brunonavarro.smiledu.ui.adapters.main.adapter.TaskAdapter
+import com.brunonavarro.smiledu.ui.adapters.main.adapter.TaskListener
 import com.brunonavarro.smiledu.util.Constants
 import com.brunonavarro.smiledu.util.datePicker.DatePickerFragment
-import com.brunonavarro.smiledu.util.validDateInput
+import com.brunonavarro.smiledu.viewModel.main.MainViewModel
+import com.brunonavarro.smiledu.viewModel.main.MainViewModelFactory
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance

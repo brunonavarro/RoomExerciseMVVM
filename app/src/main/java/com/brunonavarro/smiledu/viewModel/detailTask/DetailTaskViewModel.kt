@@ -1,10 +1,11 @@
-package com.brunonavarro.smiledu.ui.detailTask
+package com.brunonavarro.smiledu.viewModel.detailTask
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.data.repository.detailTaskRepository.DetailTaskRepository
+import com.brunonavarro.smiledu.ui.detailTask.DetailTaskListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

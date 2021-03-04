@@ -1,13 +1,10 @@
-package com.brunonavarro.smiledu.ui.main
+package com.brunonavarro.smiledu.viewModel.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.data.repository.taskRepository.TaskRepository
-import com.brunonavarro.smiledu.util.Constants.ERROR_EMPTY_LIST
-import com.brunonavarro.smiledu.util.Constants.ERROR_GET_TASK_LIST
-import com.brunonavarro.smiledu.util.Constants.ERROR_INSERT_TASK
-import com.brunonavarro.smiledu.util.Constants.ERROR_UPDATE_TASK
+import com.brunonavarro.smiledu.ui.main.MainListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

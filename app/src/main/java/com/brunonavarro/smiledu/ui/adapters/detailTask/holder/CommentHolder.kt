@@ -1,4 +1,4 @@
-package com.brunonavarro.smiledu.ui.detailTask.adapter
+package com.brunonavarro.smiledu.ui.adapters.detailTask.holder
 
 import android.app.Activity
 import android.content.Context
@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.brunonavarro.smiledu.R
 import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.databinding.ItemCommentBinding
+import com.brunonavarro.smiledu.ui.adapters.detailTask.adapter.CommentListener
 
 class CommentHolder(
-    val binding: ItemCommentBinding,
-    val listener: CommentListener,
-    val activity: Activity
+        val binding: ItemCommentBinding,
+        val listener: CommentListener,
+        val activity: Activity
 ) : RecyclerView.ViewHolder(binding.root){
 
     var context: Context? = null

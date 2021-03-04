@@ -1,7 +1,6 @@
-package com.brunonavarro.smiledu.ui.detailTask.adapter
+package com.brunonavarro.smiledu.ui.adapters.detailTask.adapter
 
 import com.brunonavarro.smiledu.data.entity.Comment
-import com.brunonavarro.smiledu.data.entity.Task
 
 interface CommentListener {
     fun onClickEdit(comment: Comment, isEdit: Boolean)

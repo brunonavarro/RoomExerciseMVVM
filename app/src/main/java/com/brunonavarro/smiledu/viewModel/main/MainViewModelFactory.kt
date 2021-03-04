@@ -1,4 +1,4 @@
-package com.brunonavarro.smiledu.ui.main
+package com.brunonavarro.smiledu.viewModel.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
