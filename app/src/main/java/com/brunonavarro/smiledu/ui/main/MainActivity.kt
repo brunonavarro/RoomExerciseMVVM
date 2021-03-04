@@ -150,22 +150,16 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
         acceptButton.setOnClickListener {
             val task = Task()
-            if (validForm(titleTask, bodyTask, finishTask!!)){
+            if (validForm(titleTask, bodyTask, finishTask)){
                 val formatDate = SimpleDateFormat("dd/mm/yyyy", Locale.getDefault())
 
                 task.title = titleTask.text.toString().trim()
                 task.body = bodyTask.text.toString().trim()
-                task.finishDate = finishTask?.text.toString().trim()
+                task.finishDate = finishTask.text.toString().trim()
                 task.createDate = formatDate.format(Date()).toString()
-                task.id = taskAdapterView.value?.itemList!!.size + 1
 
                 mainViewModel.addTask(task)
-                taskAdapterView.value?.itemList?.add(task)
-                val items = taskAdapterView.value?.itemList
-                items?.sortByDescending { it.id }
-                taskAdapterView.value?.itemList = items!!.toMutableList()
-                mainViewModel.taskList.value = taskAdapterView.value?.itemList
-                taskAdapterView.value?.notifyDataSetChanged()
+                mainViewModel.getTasks()
 
                 dialogTask?.dismiss()
             }
