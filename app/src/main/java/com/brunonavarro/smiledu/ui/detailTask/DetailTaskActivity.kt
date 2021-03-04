@@ -71,7 +71,11 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
     private fun addActionDoneListener(editText: EditText) {
         editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                || actionId == EditorInfo.IME_ACTION_GO
+                || actionId == EditorInfo.IME_ACTION_NEXT
+                || actionId == EditorInfo.IME_ACTION_SEND
+            ) {
                 if (!binding.commentEditText.text.isNullOrEmpty()) {
                     val comment = Comment()
                     comment.message = binding.commentEditText.text.toString().trim()
@@ -103,6 +107,37 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
             }
             true
         }
+
+        binding.sendButton.setOnClickListener {
+            if (binding.commentEditText.text.trim().isNotEmpty()) {
+                val comment = Comment()
+                comment.message = binding.commentEditText.text.toString().trim()
+                comment.taskId = taskId
+
+                if (!isEditComment.value!!) {
+                    comment.id = commentAdapterView.value?.itemList!!.size + 1
+                    mainViewModel.addComment(comment)
+                    commentAdapterView.value?.itemList?.add(comment)
+                    commentAdapterView.value?.notifyDataSetChanged()
+                    updateCountComment(commentAdapterView.value?.itemList!!.size)
+                }else{
+                    comment.id = selectedComment.value?.id
+                    commentAdapterView.value?.itemList?.firstOrNull { it.id == comment.id }?.let {
+                        it.id = comment.id
+                        it.message = comment.message
+                        it.taskId = comment.taskId
+                    }
+                    mainViewModel.updateComment(comment)
+                    commentAdapterView.value?.notifyDataSetChanged()
+                    updateCountComment(commentAdapterView.value?.itemList!!.size)
+                }
+                isEditComment.value = false
+                mainViewModel.comments.value = commentAdapterView.value?.itemList
+                binding.commentEditText.setText("")
+            }else{
+                errorMessage(null, getString(R.string.error_empty_comment))
+            }
+        }
     }
 
     private fun observables() {
@@ -129,7 +164,8 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
     fun configAdapter(){
         binding.commentRecyclerView.apply {
             setHasFixedSize(false)
-            layoutManager = LinearLayoutManager(this@DetailTaskActivity, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(this@DetailTaskActivity, LinearLayoutManager.VERTICAL,
+                    false)
         }
         commentAdapterView.value = CommentAdapter(this, this)
         binding.commentRecyclerView.adapter = commentAdapterView.value

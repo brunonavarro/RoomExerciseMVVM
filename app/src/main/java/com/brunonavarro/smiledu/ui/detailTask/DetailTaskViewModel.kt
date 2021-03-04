@@ -67,7 +67,6 @@ class DetailTaskViewModel(
             listener?.showProgressBar(true)
             detailTaskRepository.removeComment(comment)
             listener?.showProgressBar(false)
-            listener?.createTaskSuccess()
         }
     }
 
