@@ -24,6 +24,7 @@ import com.brunonavarro.smiledu.util.validDateInput
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
+import java.text.FieldPosition
 
 class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         DetailTaskListener, CommentListener {
@@ -71,8 +72,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
     private fun addActionDoneListener(editText: EditText) {
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (binding.commentEditText.text.isNotEmpty()) {
-                    Toast.makeText(this, "Send Comment", Toast.LENGTH_LONG).show()
+                if (!binding.commentEditText.text.isNullOrEmpty()) {
                     val comment = Comment()
                     comment.message = binding.commentEditText.text.toString().trim()
                     comment.taskId = taskId
@@ -83,21 +83,22 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                         commentAdapterView.value?.itemList?.add(comment)
                         commentAdapterView.value?.notifyDataSetChanged()
                         updateCountComment(commentAdapterView.value?.itemList!!.size)
-                        isEditComment.value = false
                     }else{
                         comment.id = selectedComment.value?.id
-                        mainViewModel.comments.value?.firstOrNull { it.id == comment.id }?.let {
+                        commentAdapterView.value?.itemList?.firstOrNull { it.id == comment.id }?.let {
                             it.id = comment.id
                             it.message = comment.message
                             it.taskId = comment.taskId
                         }
-                        commentAdapterView.value?.itemList = mainViewModel.comments.value!!
-                        commentAdapterView.value?.notifyDataSetChanged()
                         mainViewModel.updateComment(comment)
+                        commentAdapterView.value?.notifyDataSetChanged()
                         updateCountComment(commentAdapterView.value?.itemList!!.size)
-                        isEditComment.value = false
                     }
+                    isEditComment.value = false
+                    mainViewModel.comments.value = commentAdapterView.value?.itemList
                     binding.commentEditText.setText("")
+                }else{
+                    errorMessage(null, getString(R.string.error_empty_comment))
                 }
             }
             true
@@ -212,6 +213,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
         dialogTask = builder.create()
         dialogTask.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogTask.setCancelable(false)
         dialogTask.show()
     }
 
@@ -221,7 +223,6 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
         val showView: View =
             LayoutInflater.from(this).inflate(R.layout.view_dialog_delete_activity, null)
-
 
         val cancelButton: Button = showView.findViewById(R.id.cancelButton)
         val acceptButton: Button = showView.findViewById(R.id.acceptButton)
@@ -241,6 +242,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
         dialogTask = builder.create()
         dialogTask.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogTask.setCancelable(false)
         dialogTask.show()
     }
 
@@ -270,7 +272,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         return true
     }
 
-    fun showDialogDeleteComment(comment: Comment){
+    fun showDialogDeleteComment(comment: Comment, position: Int){
         var dialogTask: AlertDialog? = null
         val builder = AlertDialog.Builder(this)
 
@@ -290,28 +292,31 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
         acceptButton.setOnClickListener {
             mainViewModel.comments.value?.remove(comment)
+            commentAdapterView.value?.itemList?.remove(comment)
             mainViewModel.deleteComment(comment)
+            commentAdapterView.value?.notifyItemRemoved(position)
+            updateCountComment(commentAdapterView.value!!.itemCount)
             dialogTask?.dismiss()
-            finish()
         }
 
         builder.setView(showView)
 
         dialogTask = builder.create()
         dialogTask.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogTask.setCancelable(false)
         dialogTask.show()
     }
 
-    override fun onClickEdit(comment: Comment) {
-        isEditComment.value = true
+    override fun onClickEdit(comment: Comment, isEdit: Boolean) {
+        isEditComment.value = isEdit
         selectedComment.value = comment
         binding.commentEditText.setText(comment.message)
         binding.commentEditText.selectAll()
         binding.commentEditText.requestFocus()
     }
 
-    override fun onClickDelete(comment: Comment) {
-        showDialogDeleteComment(comment)
+    override fun onClickDelete(comment: Comment, position: Int) {
+        showDialogDeleteComment(comment, position)
     }
 
     override fun showProgressBar(isShow: Boolean) {

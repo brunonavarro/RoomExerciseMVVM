@@ -174,6 +174,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
         dialogTask = builder.create()
         dialogTask.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogTask.setCancelable(false)
         dialogTask.show()
     }
 
