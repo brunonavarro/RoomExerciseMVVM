@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
                 taskAdapterView.value?.itemList = it
                 taskAdapterView.value?.notifyDataSetChanged()
             }
+            binding.titleToolBar.text = getString(R.string.diary_value, it.size.toString())
         }
     }
 
@@ -124,6 +125,8 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
             taskAdapterView.value?.itemList?.sortByDescending { it.id }
         }
         taskAdapterView.value?.notifyDataSetChanged()
+        binding.titleToolBar.text = getString(R.string.diary_value,
+                taskAdapterView.value?.itemList?.size.toString())
     }
 
     fun showDialogAddTask(){
@@ -159,7 +162,6 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
                 task.createDate = formatDate.format(Date()).toString()
 
                 mainViewModel.addTask(task)
-                mainViewModel.getTasks()
 
                 dialogTask?.dismiss()
             }
@@ -219,6 +221,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
     override fun createTaskSuccess() {
         errorMessage(null, getString(R.string.create_task_success))
+        mainViewModel.getTasks()
     }
 
     override fun errorMessage(codeError: Int?, message: String?) {

@@ -51,4 +51,5 @@
     <string name="remove_comment">Eliminar</string>
     <string name="dialog_delete_comment_message">Recuerde que no se podrá recuperar su comentario.</string>
     <string name="error_empty_comment">No puede agregar un comentario vacio</string>
+    <string name="diary_value">Agenda (%1s)</string>
 </resources>

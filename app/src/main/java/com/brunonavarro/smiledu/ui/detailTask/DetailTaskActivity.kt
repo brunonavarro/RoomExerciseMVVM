@@ -116,7 +116,6 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                 comment.taskId = taskId
 
                 if (!isEditComment.value!!) {
-                    comment.id = commentAdapterView.value?.itemList!!.size + 1
                     mainViewModel.addComment(comment)
                     commentAdapterView.value?.itemList?.add(comment)
                     commentAdapterView.value?.notifyDataSetChanged()
@@ -331,6 +330,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
             mainViewModel.comments.value?.remove(comment)
             commentAdapterView.value?.itemList?.remove(comment)
             mainViewModel.deleteComment(comment)
+            //commentAdapterView.value?.itemList = mainViewModel.comments.value!!.toMutableList()
             commentAdapterView.value?.notifyItemRemoved(position)
             updateCountComment(commentAdapterView.value!!.itemCount)
             dialogTask?.dismiss()
@@ -366,6 +366,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
     override fun createTaskSuccess() {
         errorMessage(null, getString(R.string.create_comment_success))
+        mainViewModel.getComments()
     }
 
     override fun errorMessage(codeError: Int?, message: String?) {
