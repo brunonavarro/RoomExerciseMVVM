@@ -2,8 +2,8 @@ package com.brunonavarro.smiledu.viewModel.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.brunonavarro.shared.repository.taskRepository.TaskRepository
 import com.brunonavarro.smiledu.data.entity.Task
-import com.brunonavarro.smiledu.data.repository.taskRepository.TaskRepository
 import com.brunonavarro.smiledu.ui.main.MainListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,12 @@ class MainViewModel(
     fun getTasks(){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            taskList.postValue(taskRepository.getTasks().toMutableList())
+            val taskValue = mutableListOf<Task>()
+            taskRepository.getTasks().toMutableList().forEach {
+                taskValue.add(Task(it.id, it.title, it.body,
+                    it.isComplete, it.createDate, it.finishDate))
+            }
+            taskList.postValue(taskValue)
             mainListener?.showProgressBar(false)
         }
     }
@@ -32,7 +37,14 @@ class MainViewModel(
     fun addTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            taskRepository.addTask(task)
+            val taskValue = com.brunonavarro.shared.model.Task()
+            taskValue.id = task.id
+            taskValue.body = task.body
+            taskValue.title = task.title
+            taskValue.isComplete = task.isComplete
+            taskValue.createDate = task.createDate
+            taskValue.finishDate = task.finishDate
+            taskRepository.addTask(taskValue)
             mainListener?.showProgressBar(false)
             mainListener?.createTaskSuccess()
         }
@@ -41,7 +53,14 @@ class MainViewModel(
     fun updateTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            taskRepository.updateTask(task)
+            val taskValue = com.brunonavarro.shared.model.Task()
+            taskValue.id = task.id
+            taskValue.body = task.body
+            taskValue.title = task.title
+            taskValue.isComplete = task.isComplete
+            taskValue.createDate = task.createDate
+            taskValue.finishDate = task.finishDate
+            taskRepository.updateTask(taskValue)
             mainListener?.showProgressBar(false)
         }
     }

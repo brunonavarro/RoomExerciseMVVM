@@ -2,9 +2,9 @@ package com.brunonavarro.smiledu.viewModel.detailTask
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.brunonavarro.shared.repository.detailRepository.DetailTaskRepository
 import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.data.entity.Task
-import com.brunonavarro.smiledu.data.repository.detailTaskRepository.DetailTaskRepository
 import com.brunonavarro.smiledu.ui.detailTask.DetailTaskListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,17 @@ class DetailTaskViewModel(
     fun getTask(){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            task.postValue(detailTaskRepository.getTask(taskId!!))
+            val taskData = Task()
+            detailTaskRepository.getTask(taskId!!).let {
+                taskData.id = it.id
+                taskData.title = it.title
+                taskData.body = it.body
+                taskData.isComplete = it.isComplete
+                taskData.createDate = it.createDate
+                taskData.finishDate = it.finishDate
+            }
+
+            task.postValue(taskData)
             listener?.showProgressBar(false)
         }
     }
@@ -32,7 +42,14 @@ class DetailTaskViewModel(
     fun deleteTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            detailTaskRepository.removeTask(task)
+            val taskValue = com.brunonavarro.shared.model.Task()
+            taskValue.id = task.id
+            taskValue.body = task.body
+            taskValue.title = task.title
+            taskValue.isComplete = task.isComplete
+            taskValue.createDate = task.createDate
+            taskValue.finishDate = task.finishDate
+            detailTaskRepository.removeTask(taskValue)
             listener?.showProgressBar(false)
             listener?.createTaskSuccess()
         }
@@ -41,7 +58,14 @@ class DetailTaskViewModel(
     fun updateTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            detailTaskRepository.updateTask(task)
+            val taskValue = com.brunonavarro.shared.model.Task()
+            taskValue.id = task.id
+            taskValue.body = task.body
+            taskValue.title = task.title
+            taskValue.isComplete = task.isComplete
+            taskValue.createDate = task.createDate
+            taskValue.finishDate = task.finishDate
+            detailTaskRepository.updateTask(taskValue)
             listener?.showProgressBar(false)
         }
     }
@@ -49,7 +73,11 @@ class DetailTaskViewModel(
     fun getComments(){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            comments.postValue(detailTaskRepository.getComments(taskId!!).toMutableList())
+            val commentValues = mutableListOf<Comment>()
+            detailTaskRepository.getComments(taskId!!).toMutableList().forEach {
+                commentValues.add(Comment(it.id, it.taskId, it.message))
+            }
+            comments.postValue(commentValues)
             listener?.showProgressBar(false)
         }
     }
@@ -57,7 +85,11 @@ class DetailTaskViewModel(
     fun addComment(comment: Comment){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            detailTaskRepository.addComment(comment)
+            val commentValue = com.brunonavarro.shared.model.Comment()
+            commentValue.id = comment.id
+            commentValue.taskId = comment.taskId
+            commentValue.message = comment.message
+            detailTaskRepository.addComment(commentValue)
             listener?.showProgressBar(false)
             listener?.createTaskSuccess()
         }
@@ -66,7 +98,11 @@ class DetailTaskViewModel(
     fun deleteComment(comment: Comment){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            detailTaskRepository.removeComment(comment)
+            val commentValue = com.brunonavarro.shared.model.Comment()
+            commentValue.id = comment.id
+            commentValue.taskId = comment.taskId
+            commentValue.message = comment.message
+            detailTaskRepository.removeComment(commentValue)
             listener?.showProgressBar(false)
         }
     }
@@ -74,7 +110,11 @@ class DetailTaskViewModel(
     fun updateComment(comment: Comment){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            detailTaskRepository.updateComment(comment)
+            val commentValue = com.brunonavarro.shared.model.Comment()
+            commentValue.id = comment.id
+            commentValue.taskId = comment.taskId
+            commentValue.message = comment.message
+            detailTaskRepository.updateComment(commentValue)
             listener?.showProgressBar(false)
         }
     }

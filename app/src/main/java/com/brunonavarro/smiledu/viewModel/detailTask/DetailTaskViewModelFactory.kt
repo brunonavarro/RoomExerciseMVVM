@@ -2,7 +2,7 @@ package com.brunonavarro.smiledu.viewModel.detailTask
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.brunonavarro.smiledu.data.repository.detailTaskRepository.DetailTaskRepository
+import com.brunonavarro.shared.repository.detailRepository.DetailTaskRepository
 
 class DetailTaskViewModelFactory(
     private var detailTaskRepository: DetailTaskRepository

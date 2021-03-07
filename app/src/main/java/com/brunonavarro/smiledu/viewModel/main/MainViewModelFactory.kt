@@ -2,7 +2,7 @@ package com.brunonavarro.smiledu.viewModel.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.brunonavarro.smiledu.data.repository.taskRepository.TaskRepository
+import com.brunonavarro.shared.repository.taskRepository.TaskRepository
 
 class MainViewModelFactory(
     private var taskRepository: TaskRepository
