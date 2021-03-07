@@ -1,0 +1,2 @@
+com/brunonavarro/shared/BuildConfig.java
+ com.brunonavarro.shared.BuildConfig
