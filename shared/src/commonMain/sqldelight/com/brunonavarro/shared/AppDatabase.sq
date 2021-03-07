@@ -1,0 +1,46 @@
+CREATE TABLE task (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  isComplete INTEGER AS Boolean DEFAULT 0,
+  createDate TEXT NOT NULL,
+  finishDate TEXT NOT NULL
+);
+
+CREATE TABLE comment (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  taskId INTEGER NOT NULL,
+  message TEXT NOT NULL,
+  FOREIGN KEY (taskId) REFERENCES task(id)
+);
+
+insertTaskItem:
+INSERT OR REPLACE INTO task (title, body, isComplete, createDate, finishDate)
+VALUES (?, ?, ?, ?, ?);
+
+selectAllTask:
+SELECT * FROM task ORDER BY id DESC;
+
+selectTaskId:
+SELECT * FROM task WHERE id = ?;
+
+updateTaskId:
+INSERT OR REPLACE INTO task (id, title, body, isComplete, createDate, finishDate)
+VALUES (?, ?, ?, ?, ?, ?);
+
+deleteTask:
+DELETE FROM task WHERE id = ?;
+
+
+insertCommentItem:
+INSERT OR REPLACE INTO comment (taskId, message)
+VALUES (?, ?);
+
+selectAllComment:
+SELECT * FROM comment ORDER BY id DESC;
+
+updateCommentId:
+UPDATE comment SET message = ? WHERE id = ?;
+
+deleteComment:
+DELETE FROM comment WHERE id = ?;
