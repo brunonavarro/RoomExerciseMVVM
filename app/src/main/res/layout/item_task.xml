@@ -51,11 +51,14 @@
                 <TextView
                     android:id="@+id/activityTitle"
                     style="@style/activityTitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:maxLines="1"
                     android:text="@{task.title}"
+                    app:layout_constraintEnd_toStartOf="@+id/isCompleteCheckBox"
                     app:layout_constraintStart_toStartOf="@+id/guideline2"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="@string/activity_title_example" />
@@ -68,6 +71,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="10dp"
                     android:maxLines="2"
+                    android:lines="2"
                     android:text="@{task.body}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/activityTitle"
