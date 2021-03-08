@@ -10,7 +10,6 @@ import com.squareup.sqldelight.db.SqlCursor
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.internal.copyOnWriteList
 import kotlin.Any
-import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -77,7 +76,7 @@ private class AppDatabaseQueriesImpl(
     id: Long,
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   ) -> T): Query<T> = Query(-47640865, selectAllTask, driver, "AppDatabase.sq", "selectAllTask",
@@ -86,7 +85,7 @@ private class AppDatabaseQueriesImpl(
       cursor.getLong(0)!!,
       cursor.getString(1)!!,
       cursor.getString(2)!!,
-      cursor.getLong(3)?.let { it == 1L },
+      cursor.getLong(3),
       cursor.getString(4)!!,
       cursor.getString(5)!!
     )
@@ -98,7 +97,7 @@ private class AppDatabaseQueriesImpl(
     id: Long,
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   ) -> T): Query<T> = SelectTaskIdQuery(id) { cursor ->
@@ -106,7 +105,7 @@ private class AppDatabaseQueriesImpl(
       cursor.getLong(0)!!,
       cursor.getString(1)!!,
       cursor.getString(2)!!,
-      cursor.getLong(3)?.let { it == 1L },
+      cursor.getLong(3),
       cursor.getString(4)!!,
       cursor.getString(5)!!
     )
@@ -132,7 +131,7 @@ private class AppDatabaseQueriesImpl(
   override fun insertTaskItem(
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   ) {
@@ -142,7 +141,7 @@ private class AppDatabaseQueriesImpl(
     """.trimMargin(), 5) {
       bindString(1, title)
       bindString(2, body)
-      bindLong(3, isComplete?.let { if (it) 1L else 0L })
+      bindLong(3, isComplete)
       bindString(4, createDate)
       bindString(5, finishDate)
     }
@@ -154,7 +153,7 @@ private class AppDatabaseQueriesImpl(
     id: Long?,
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   ) {
@@ -165,11 +164,20 @@ private class AppDatabaseQueriesImpl(
       bindLong(1, id)
       bindString(2, title)
       bindString(3, body)
-      bindLong(4, isComplete?.let { if (it) 1L else 0L })
+      bindLong(4, isComplete)
       bindString(5, createDate)
       bindString(6, finishDate)
     }
     notifyQueries(-786031532, {database.appDatabaseQueries.selectAllTask +
+        database.appDatabaseQueries.selectTaskId})
+  }
+
+  override fun updateIsCompleteTaskId(isComplete: Long?, id: Long) {
+    driver.execute(474855863, """UPDATE task SET isComplete = ? WHERE id = ?""", 2) {
+      bindLong(1, isComplete)
+      bindLong(2, id)
+    }
+    notifyQueries(474855863, {database.appDatabaseQueries.selectAllTask +
         database.appDatabaseQueries.selectTaskId})
   }
 

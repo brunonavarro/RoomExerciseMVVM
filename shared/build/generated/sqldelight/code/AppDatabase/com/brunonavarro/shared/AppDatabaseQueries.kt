@@ -3,7 +3,6 @@ package com.brunonavarro.shared
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.Transacter
 import kotlin.Any
-import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 
@@ -12,7 +11,7 @@ interface AppDatabaseQueries : Transacter {
     id: Long,
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   ) -> T): Query<T>
@@ -23,7 +22,7 @@ interface AppDatabaseQueries : Transacter {
     id: Long,
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   ) -> T): Query<T>
@@ -41,7 +40,7 @@ interface AppDatabaseQueries : Transacter {
   fun insertTaskItem(
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   )
@@ -50,10 +49,12 @@ interface AppDatabaseQueries : Transacter {
     id: Long?,
     title: String,
     body: String,
-    isComplete: Boolean?,
+    isComplete: Long?,
     createDate: String,
     finishDate: String
   )
+
+  fun updateIsCompleteTaskId(isComplete: Long?, id: Long)
 
   fun deleteTask(id: Long)
 

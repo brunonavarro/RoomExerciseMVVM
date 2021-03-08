@@ -15,7 +15,7 @@ class TaskRepository(
     override suspend fun addTask(task: Task) {
         CoroutineScope(Dispatchers.Unconfined).launch {
             sqlDelight.insertTaskItem(task.title.toString(),
-                task.body.toString(), task.isComplete, task.createDate.toString(),
+                task.body.toString(), task.isComplete?.toLong(), task.createDate.toString(),
                 task.finishDate.toString())
         }
     }
@@ -39,8 +39,14 @@ class TaskRepository(
             task.id!!.toLong(),
             task.title.toString(),
             task.body.toString(),
-            task.isComplete,
+            task.isComplete?.toLong(),
             task.createDate.toString(),
             task.finishDate.toString())
+    }
+
+    override suspend fun updateIsComplete(task: Task) {
+        sqlDelight.updateIsCompleteTaskId(
+            task.isComplete?.toLong(),
+            task.id!!.toLong())
     }
 }

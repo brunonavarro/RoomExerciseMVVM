@@ -202,13 +202,13 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     }
 
     override fun onIsCompleteTask(task: Task, isComplete: Boolean) {
-        mainViewModel.taskList.value?.forEach {
-            if (it.id == task.id){
+//        mainViewModel.taskList.value?.forEach {
+//            if (it.id == task.id){
                 task.isComplete = isComplete
-                it.isComplete = isComplete
-                mainViewModel.updateTask(task)
-            }
-        }
+                //it.isComplete = isComplete
+                mainViewModel.updateIsCompleteTask(task)
+//            }
+//        }
     }
 
     override fun showProgressBar(isShow: Boolean) {

@@ -2,7 +2,7 @@ CREATE TABLE task (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   body TEXT NOT NULL,
-  isComplete INTEGER AS Boolean DEFAULT 0,
+  isComplete INTEGER DEFAULT 0,
   createDate TEXT NOT NULL,
   finishDate TEXT NOT NULL
 );
@@ -28,9 +28,11 @@ updateTaskId:
 INSERT OR REPLACE INTO task (id, title, body, isComplete, createDate, finishDate)
 VALUES (?, ?, ?, ?, ?, ?);
 
+updateIsCompleteTaskId:
+UPDATE task SET isComplete = ? WHERE id = ?;
+
 deleteTask:
 DELETE FROM task WHERE id = ?;
-
 
 insertCommentItem:
 INSERT OR REPLACE INTO comment (taskId, message)

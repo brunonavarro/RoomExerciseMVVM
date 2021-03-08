@@ -20,7 +20,7 @@ class DetailTaskRepository(
             task.id = query.id.toInt()
             task.title = query.title
             task.body = query.body
-            task.isComplete = query.isComplete?: false
+            task.isComplete = query.isComplete?.toInt() ?: 0
             task.createDate = query.createDate
             task.finishDate = query.finishDate
             continuation.resume(task)
@@ -30,7 +30,7 @@ class DetailTaskRepository(
     override suspend fun updateTask(task: Task) {
         CoroutineScope(Dispatchers.Unconfined).launch {
             sqlDelight.updateTaskId(task.id!!.toLong(),task.title.toString(), task.body.toString(),
-                    task.isComplete, task.createDate.toString(), task.finishDate.toString())
+                    task.isComplete?.toLong(), task.createDate.toString(), task.finishDate.toString())
         }
     }
 
