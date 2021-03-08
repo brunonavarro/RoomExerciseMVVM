@@ -35,8 +35,12 @@ class TaskRepository(
     }
 
     override suspend fun updateTask(task: Task) {
-        sqlDelight.updateTaskId(task.id!!.toLong(), task.title.toString(),
-            task.body.toString(), task.isComplete, task.createDate.toString(),
+        sqlDelight.updateTaskId(
+            task.id!!.toLong(),
+            task.title.toString(),
+            task.body.toString(),
+            task.isComplete,
+            task.createDate.toString(),
             task.finishDate.toString())
     }
 }
