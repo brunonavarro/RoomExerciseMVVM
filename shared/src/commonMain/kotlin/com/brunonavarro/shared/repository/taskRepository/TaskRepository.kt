@@ -15,7 +15,7 @@ class TaskRepository(
     override suspend fun addTask(task: Task) {
         CoroutineScope(Dispatchers.Unconfined).launch {
             sqlDelight.insertTaskItem(task.title.toString(),
-                task.body.toString(), task.isComplete?.toLong(), task.createDate.toString(),
+                task.body.toString(), task.isComplete?: false, task.createDate.toString(),
                 task.finishDate.toString())
         }
     }
@@ -25,8 +25,8 @@ class TaskRepository(
             val list = sqlDelight.selectAllTask()
                 .executeAsList()
                 .map {
-                    Task(id = it.id.toInt(), title = it.title,
-                        body = it.body, createDate = it.createDate,
+                    Task(id = it.id, title = it.title,
+                        body = it.body, isComplete = it.isComplete ,createDate = it.createDate,
                         finishDate = it.finishDate)
                 }
 
@@ -36,17 +36,17 @@ class TaskRepository(
 
     override suspend fun updateTask(task: Task) {
         sqlDelight.updateTaskId(
-            task.id!!.toLong(),
+            task.id!!,
             task.title.toString(),
             task.body.toString(),
-            task.isComplete?.toLong(),
+            task.isComplete ?: false,
             task.createDate.toString(),
             task.finishDate.toString())
     }
 
     override suspend fun updateIsComplete(task: Task) {
         sqlDelight.updateIsCompleteTaskId(
-            task.isComplete?.toLong(),
-            task.id!!.toLong())
+            task.isComplete ?: false,
+            task.id!!)
     }
 }

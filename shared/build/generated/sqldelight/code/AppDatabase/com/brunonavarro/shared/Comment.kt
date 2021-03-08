@@ -1,10 +1,11 @@
 package com.brunonavarro.shared
 
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
 data class Comment(
-  val id: Long,
+  val id: Int,
   val taskId: Long,
   val message: String
 ) {

@@ -29,7 +29,7 @@ class DetailTaskViewModel(
                 taskData.id = it.id
                 taskData.title = it.title
                 taskData.body = it.body
-                taskData.isComplete = it.isComplete != null && it.isComplete != 0
+                taskData.isComplete = it.isComplete ?: false
                 taskData.createDate = it.createDate
                 taskData.finishDate = it.finishDate
             }
@@ -46,7 +46,7 @@ class DetailTaskViewModel(
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
-            taskValue.isComplete = if(task.isComplete) 1 else 0
+            taskValue.isComplete = task.isComplete
             taskValue.createDate = task.createDate
             taskValue.finishDate = task.finishDate
             detailTaskRepository.removeTask(taskValue)
@@ -62,7 +62,7 @@ class DetailTaskViewModel(
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
-            taskValue.isComplete = if(task.isComplete) 1 else 0
+            taskValue.isComplete = task.isComplete
             taskValue.createDate = task.createDate
             taskValue.finishDate = task.finishDate
             detailTaskRepository.updateTask(taskValue)

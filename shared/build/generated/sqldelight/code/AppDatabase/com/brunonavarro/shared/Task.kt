@@ -1,13 +1,14 @@
 package com.brunonavarro.shared
 
-import kotlin.Long
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 
 data class Task(
-  val id: Long,
+  val id: Int,
   val title: String,
   val body: String,
-  val isComplete: Long?,
+  val isComplete: Boolean,
   val createDate: String,
   val finishDate: String
 ) {

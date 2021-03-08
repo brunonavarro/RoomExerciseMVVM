@@ -15,12 +15,12 @@ class DetailTaskRepository(
 
     override suspend fun getTask(id: Int): Task = suspendCoroutine{ continuation->
         CoroutineScope(Dispatchers.Unconfined).launch {
-            val query = sqlDelight.selectTaskId(id.toLong()).executeAsOne()
+            val query = sqlDelight.selectTaskId(id).executeAsOne()
             val task = Task()
             task.id = query.id.toInt()
             task.title = query.title
             task.body = query.body
-            task.isComplete = query.isComplete?.toInt() ?: 0
+            task.isComplete = query.isComplete
             task.createDate = query.createDate
             task.finishDate = query.finishDate
             continuation.resume(task)
@@ -29,14 +29,14 @@ class DetailTaskRepository(
 
     override suspend fun updateTask(task: Task) {
         CoroutineScope(Dispatchers.Unconfined).launch {
-            sqlDelight.updateTaskId(task.id!!.toLong(),task.title.toString(), task.body.toString(),
-                    task.isComplete?.toLong(), task.createDate.toString(), task.finishDate.toString())
+            sqlDelight.updateTaskId(task.id!!,task.title.toString(), task.body.toString(),
+                    task.isComplete!!, task.createDate.toString(), task.finishDate.toString())
         }
     }
 
     override suspend fun removeTask(task: Task) {
         CoroutineScope(Dispatchers.Unconfined).launch {
-            sqlDelight.deleteTask(task.id!!.toLong())
+            sqlDelight.deleteTask(task.id!!)
         }
     }
 
@@ -59,13 +59,13 @@ class DetailTaskRepository(
 
     override suspend fun removeComment(comment: Comment) {
         CoroutineScope(Dispatchers.Unconfined).launch {
-            sqlDelight.deleteComment(comment.id!!.toLong())
+            sqlDelight.deleteComment(comment.id!!)
         }
     }
 
     override suspend fun updateComment(comment: Comment) {
         CoroutineScope(Dispatchers.Unconfined).launch {
-            sqlDelight.updateCommentId(comment.message.toString(), comment.id!!.toLong())
+            sqlDelight.updateCommentId(comment.message.toString(), comment.id!!)
         }
     }
 

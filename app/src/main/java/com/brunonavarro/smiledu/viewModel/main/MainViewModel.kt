@@ -27,7 +27,7 @@ class MainViewModel(
             val taskValue = mutableListOf<Task>()
             taskRepository.getTasks().toMutableList().forEach {
                 taskValue.add(Task(it.id, it.title, it.body,
-                    it.isComplete != null && it.isComplete != 0, it.createDate, it.finishDate))
+                    it.isComplete ?: false, it.createDate, it.finishDate))
             }
             taskList.postValue(taskValue)
             mainListener?.showProgressBar(false)
@@ -41,7 +41,7 @@ class MainViewModel(
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
-            taskValue.isComplete = if(task.isComplete){ 1 }else{ 0 }
+            taskValue.isComplete = task.isComplete ?: false
             taskValue.createDate = task.createDate
             taskValue.finishDate = task.finishDate
             taskRepository.addTask(taskValue)
@@ -57,7 +57,7 @@ class MainViewModel(
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
-            taskValue.isComplete = if(task.isComplete) 1 else 0
+            taskValue.isComplete = task.isComplete
             taskValue.createDate = task.createDate
             taskValue.finishDate = task.finishDate
             taskRepository.updateTask(taskValue)
@@ -72,7 +72,7 @@ class MainViewModel(
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
-            taskValue.isComplete = if(task.isComplete) 1 else 0
+            taskValue.isComplete = task.isComplete
             taskValue.createDate = task.createDate
             taskValue.finishDate = task.finishDate
             taskRepository.updateIsComplete(taskValue)
