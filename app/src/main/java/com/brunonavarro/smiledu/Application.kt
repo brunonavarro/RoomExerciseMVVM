@@ -2,6 +2,7 @@ package com.brunonavarro.smiledu
 
 import android.app.Application
 import com.brunonavarro.shared.AppDatabase
+import com.brunonavarro.shared.DatabaseDriverFactory
 import com.brunonavarro.shared.repository.detailRepository.DetailTaskRepository
 import com.brunonavarro.shared.repository.taskRepository.TaskRepository
 import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModelFactory
@@ -16,14 +17,14 @@ import org.kodein.di.generic.singleton
 
 class Application: Application(), KodeinAware {
 
-    fun cache(): AppDatabase = cache()
-
     override val kodein: Kodein = Kodein.lazy {
         import(androidXModule(this@Application))
 
-        val database = cache().appDatabaseQueries
+        val sqlDriver = DatabaseDriverFactory(applicationContext)
+        bind() from singleton { sqlDriver }
+        val database = AppDatabase(sqlDriver.createDriver())
 
-        bind() from singleton { database }
+        bind() from singleton { database.appDatabaseQueries }
 
         bind() from singleton { TaskRepository(instance()) }
         bind() from provider { MainViewModelFactory(instance()) }
