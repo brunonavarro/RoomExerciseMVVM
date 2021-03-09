@@ -11,10 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmileduExam">
         <activity android:name="com.brunonavarro.smiledu.ui.detailTask.DetailTaskActivity"
-            android:theme="@style/Theme.SmileduExam.NoActionBar"/>
+            android:theme="@style/Theme.SmileduExam.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.brunonavarro.smiledu.ui.main.MainActivity"
-            android:theme="@style/Theme.SmileduExam.NoActionBar">
+            android:theme="@style/Theme.SmileduExam.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
