@@ -3,6 +3,7 @@ package com.brunonavarro.smiledu.ui.main
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     var taskAdapterView =  MutableLiveData<TaskAdapter>()
     var isFilterActive = false
 
+    var updateObservable = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +67,18 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
             if (!it.isNullOrEmpty()){
                 binding.emptyList.visibility = View.GONE
                 it.sortByDescending { it.id }
-                taskAdapterView.value?.itemList = it
-                taskAdapterView.value?.notifyDataSetChanged()
+                if (updateObservable) {
+                    taskAdapterView.value?.itemList = it
+                    taskAdapterView.value?.notifyDataSetChanged()
+                    updateObservable = false
+                }
             }else {
                 binding.emptyList.visibility = View.VISIBLE
-                taskAdapterView.value?.itemList = it
-                taskAdapterView.value?.notifyDataSetChanged()
+                if (updateObservable) {
+                    taskAdapterView.value?.itemList = it
+                    taskAdapterView.value?.notifyDataSetChanged()
+                    updateObservable = false
+                }
             }
             binding.titleToolBar.text = getString(R.string.diary_value, it.size.toString())
         }
@@ -79,7 +87,8 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     fun configAdapter(){
         binding.taskRecyclerView.apply {
             setHasFixedSize(false)
-            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL,
+                false)
         }
         taskAdapterView.value = TaskAdapter(this)
         binding.taskRecyclerView.adapter = taskAdapterView.value
@@ -155,6 +164,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
             val task = Task()
             if (validForm(titleTask, bodyTask, finishTask)){
                 val formatDate = SimpleDateFormat("dd/mm/yyyy", Locale.getDefault())
+                taskAdapterView.value?.itemList?.sortBy { it.id }
 
                 task.title = titleTask.text.toString().trim()
                 task.body = bodyTask.text.toString().trim()
@@ -162,7 +172,8 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
                 task.createDate = formatDate.format(Date()).toString()
 
                 mainViewModel.addTask(task)
-
+                mainViewModel.getMaxTask()
+                updateObservable = false
                 dialogTask?.dismiss()
             }
         }
@@ -173,6 +184,16 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         dialogTask.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialogTask.setCancelable(false)
         dialogTask.show()
+    }
+
+    fun showOrHideEmptyTaskMesssage(){
+        if (taskAdapterView.value!!.itemCount > 0){
+            binding.emptyList.visibility = View.GONE
+        }else{
+            binding.emptyList.visibility = View.VISIBLE
+        }
+        binding.titleToolBar.text = getString(R.string.diary_value,
+            taskAdapterView.value?.itemList?.size.toString())
     }
 
     private fun showPicketDate(finishTask: EditText) {
@@ -188,13 +209,13 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     }
 
     private fun validForm(titleTask: EditText, bodyTask: EditText, finishTask: EditText): Boolean{
-        if (titleTask.text.isNullOrEmpty()){
+        if (titleTask.text.trim().isEmpty()){
             titleTask.error = getString(R.string.error_empty_field)
             return false
-        }else if (bodyTask.text.isNullOrEmpty()){
+        }else if (bodyTask.text.trim().isEmpty()){
             bodyTask.error = getString(R.string.error_empty_field)
             return false
-        }else if (finishTask.text.isNullOrEmpty()){
+        }else if (finishTask.text.trim().isEmpty()){
             finishTask.error = getString(R.string.error_empty_field)
             return false
         }
@@ -202,13 +223,8 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     }
 
     override fun onIsCompleteTask(task: Task, isComplete: Boolean) {
-//        mainViewModel.taskList.value?.forEach {
-//            if (it.id == task.id){
-                task.isComplete = isComplete
-                //it.isComplete = isComplete
-                mainViewModel.updateIsCompleteTask(task)
-//            }
-//        }
+        task.isComplete = isComplete
+        mainViewModel.updateIsCompleteTask(task)
     }
 
     override fun showProgressBar(isShow: Boolean) {
@@ -219,9 +235,10 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         }
     }
 
-    override fun createTaskSuccess() {
+    override fun createTaskSuccess(task: Task) {
         errorMessage(null, getString(R.string.create_task_success))
-        mainViewModel.getTasks()
+        taskAdapterView.value?.addItem(0, task)
+        showOrHideEmptyTaskMesssage()
     }
 
     override fun errorMessage(codeError: Int?, message: String?) {
@@ -249,6 +266,7 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
     override fun onRestart() {
         super.onRestart()
+        updateObservable = true
         mainViewModel.getTasks()
     }
 }

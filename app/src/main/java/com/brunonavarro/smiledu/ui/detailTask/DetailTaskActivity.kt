@@ -43,6 +43,8 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
     lateinit var currentTask: Task
     var isEditComment = MutableLiveData<Boolean>(false)
     var selectedComment = MutableLiveData<Comment>()
+    var itemPosition = -1
+    var updateObservable = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,10 +85,8 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                     comment.taskId = taskId
 
                     if (!isEditComment.value!!) {
-                        comment.id = commentAdapterView.value?.itemList!!.size + 1
                         mainViewModel.addComment(comment)
-                        commentAdapterView.value?.itemList?.add(comment)
-                        commentAdapterView.value?.notifyDataSetChanged()
+                        mainViewModel.getMaxComment()
                         updateCountComment(commentAdapterView.value?.itemList!!.size)
                     }else{
                         comment.id = selectedComment.value?.id
@@ -96,10 +96,11 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                             it.taskId = comment.taskId
                         }
                         mainViewModel.updateComment(comment)
-                        commentAdapterView.value?.notifyDataSetChanged()
+                        commentAdapterView.value?.updateItem(itemPosition, comment)
                         updateCountComment(commentAdapterView.value?.itemList!!.size)
                     }
                     isEditComment.value = false
+                    updateObservable = false
                     mainViewModel.comments.value = commentAdapterView.value?.itemList
                     binding.commentEditText.setText("")
                 }else{
@@ -117,8 +118,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
                 if (!isEditComment.value!!) {
                     mainViewModel.addComment(comment)
-                    commentAdapterView.value?.itemList?.add(comment)
-                    commentAdapterView.value?.notifyDataSetChanged()
+                    mainViewModel.getMaxComment()
                     updateCountComment(commentAdapterView.value?.itemList!!.size)
                 }else{
                     comment.id = selectedComment.value?.id
@@ -128,10 +128,11 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                         it.taskId = comment.taskId
                     }
                     mainViewModel.updateComment(comment)
-                    commentAdapterView.value?.notifyDataSetChanged()
+                    commentAdapterView.value?.updateItem(itemPosition, comment)
                     updateCountComment(commentAdapterView.value?.itemList!!.size)
                 }
                 isEditComment.value = false
+                updateObservable = false
                 mainViewModel.comments.value = commentAdapterView.value?.itemList
                 binding.commentEditText.setText("")
             }else{
@@ -149,9 +150,10 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         }
 
         mainViewModel.comments.observeForever {
-            if (!it.isNullOrEmpty()){
+            if (!it.isNullOrEmpty() && updateObservable){
                 commentAdapterView.value?.itemList = it
                 commentAdapterView.value?.notifyDataSetChanged()
+                updateObservable = false
             }
             updateCountComment(it.size)
         }
@@ -295,13 +297,13 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
     }
 
     fun validForm(titleTask: EditText, bodyTask: EditText, finishTask: EditText): Boolean{
-        if (titleTask.text.isNullOrEmpty()){
+        if (titleTask.text.trim().isEmpty()){
             titleTask.error = getString(R.string.error_empty_field)
             return false
-        }else if (bodyTask.text.isNullOrEmpty()){
+        }else if (bodyTask.text.trim().isEmpty()){
             bodyTask.error = getString(R.string.error_empty_field)
             return false
-        }else if (finishTask.text.isNullOrEmpty() && !validDateInput(finishTask.text.toString())){
+        }else if (finishTask.text.trim().isEmpty() && !validDateInput(finishTask.text.toString())){
             finishTask.error = getString(R.string.error_empty_field)
             return false
         }
@@ -314,7 +316,6 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
         val showView: View =
                 LayoutInflater.from(this).inflate(R.layout.view_dialog_delete_activity, null)
-
 
         val cancelButton: Button = showView.findViewById(R.id.cancelButton)
         val acceptButton: Button = showView.findViewById(R.id.acceptButton)
@@ -330,8 +331,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
             mainViewModel.comments.value?.remove(comment)
             commentAdapterView.value?.itemList?.remove(comment)
             mainViewModel.deleteComment(comment)
-            //commentAdapterView.value?.itemList = mainViewModel.comments.value!!.toMutableList()
-            commentAdapterView.value?.notifyItemRemoved(position)
+            commentAdapterView.value?.removeItem(position, comment)
             updateCountComment(commentAdapterView.value!!.itemCount)
             dialogTask?.dismiss()
         }
@@ -344,9 +344,10 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         dialogTask.show()
     }
 
-    override fun onClickEdit(comment: Comment, isEdit: Boolean) {
+    override fun onClickEdit(comment: Comment, isEdit: Boolean, position: Int) {
         isEditComment.value = isEdit
         selectedComment.value = comment
+        itemPosition = position
         binding.commentEditText.setText(comment.message)
         binding.commentEditText.selectAll()
         binding.commentEditText.requestFocus()
@@ -364,8 +365,28 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         }
     }
 
-    override fun createTaskSuccess() {
-        errorMessage(null, getString(R.string.create_comment_success))
+    override fun messageSuccess(codeMessage: Int, comment: Comment?) {
+        when(codeMessage){
+            Constants.SUCCESS_ADD_COMMENT ->{
+                errorMessage(null, getString(R.string.create_comment_success))
+                if (comment != null) {
+                    commentAdapterView.value?.addItem(0, comment)
+                }
+            }
+            Constants.SUCCESS_DELETE_COMMENT ->{
+                errorMessage(null, getString(R.string.delete_comment_success))
+            }
+            Constants.SUCCESS_DELETE_TASK ->{
+                errorMessage(null, getString(R.string.delete_task_success))
+            }
+            Constants.SUCCESS_UPDATE_COMMENT ->{
+                errorMessage(null, getString(R.string.update_comment_success))
+            }
+            Constants.SUCCESS_UPDATE_TASK ->{
+                errorMessage(null, getString(R.string.update_task_success))
+            }
+        }
+        updateObservable = true
         mainViewModel.getComments()
     }
 
@@ -390,5 +411,10 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        updateObservable = true
     }
 }

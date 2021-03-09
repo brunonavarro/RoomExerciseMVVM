@@ -1,6 +1,7 @@
 package com.brunonavarro.shared.repository.taskRepository
 
 import com.brunonavarro.shared.AppDatabaseQueries
+import com.brunonavarro.shared.model.Comment
 import com.brunonavarro.shared.model.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,20 @@ import kotlin.coroutines.suspendCoroutine
 class TaskRepository(
     private val sqlDelight: AppDatabaseQueries
 ): TaskInterface {
+
+    override suspend fun getMaxTask(): Task = suspendCoroutine{continuation->
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            val query = sqlDelight.selectMaxItemTask().executeAsOne()
+            val task = Task()
+            task.id = query.id
+            task.title = query.title
+            task.body = query.body
+            task.isComplete = query.isComplete
+            task.createDate = query.createDate
+            task.finishDate = query.finishDate
+            continuation.resume(task)
+        }
+    }
 
     override suspend fun addTask(task: Task) {
         CoroutineScope(Dispatchers.Unconfined).launch {

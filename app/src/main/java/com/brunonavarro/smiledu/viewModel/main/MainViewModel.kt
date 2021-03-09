@@ -3,6 +3,7 @@ package com.brunonavarro.smiledu.viewModel.main
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.brunonavarro.shared.repository.taskRepository.TaskRepository
+import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.ui.main.MainListener
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +15,7 @@ class MainViewModel(
 ): ViewModel() {
 
     var taskList = MutableLiveData<MutableList<Task>>()
+    val maxTask = MutableLiveData<Task>()
 
     var mainListener: MainListener? = null
 
@@ -34,6 +36,24 @@ class MainViewModel(
         }
     }
 
+    fun getMaxTask(){
+        CoroutineScope(Dispatchers.Main).launch {
+            mainListener?.showProgressBar(true)
+            val taskValue = Task()
+            taskRepository.getMaxTask().let {
+                taskValue.id = it.id
+                taskValue.title = it.title
+                taskValue.body = it.body
+                taskValue.isComplete = it.isComplete ?: false
+                taskValue.createDate = it.createDate
+                taskValue.finishDate = it.finishDate
+            }
+            maxTask.postValue(taskValue)
+            mainListener?.createTaskSuccess(taskValue)
+            mainListener?.showProgressBar(false)
+        }
+    }
+
     fun addTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
@@ -46,7 +66,6 @@ class MainViewModel(
             taskValue.finishDate = task.finishDate
             taskRepository.addTask(taskValue)
             mainListener?.showProgressBar(false)
-            mainListener?.createTaskSuccess()
         }
     }
 

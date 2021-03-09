@@ -13,11 +13,22 @@ class DetailTaskRepository(
     private val sqlDelight: AppDatabaseQueries
 ): DetailTaskInterface {
 
+    override suspend fun getMaxComment(): Comment = suspendCoroutine{continuation->
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            val query = sqlDelight.selectMaxItemComment().executeAsOne()
+            val comment = Comment()
+            comment.id = query.id
+            comment.taskId = query.taskId
+            comment.message = query.message
+            continuation.resume(comment)
+        }
+    }
+
     override suspend fun getTask(id: Int): Task = suspendCoroutine{ continuation->
         CoroutineScope(Dispatchers.Unconfined).launch {
             val query = sqlDelight.selectTaskId(id).executeAsOne()
             val task = Task()
-            task.id = query.id.toInt()
+            task.id = query.id
             task.title = query.title
             task.body = query.body
             task.isComplete = query.isComplete
@@ -42,9 +53,9 @@ class DetailTaskRepository(
 
     override suspend fun getComments(taskId: Int): List<Comment> = suspendCoroutine{ continuation->
         CoroutineScope(Dispatchers.Unconfined).launch {
-            val list = sqlDelight.selectAllComment().executeAsList()
+            val list = sqlDelight.selectAllComment(taskId).executeAsList()
                 .map {
-                    Comment(id = it.id.toInt(), message = it.message)
+                    Comment(id = it.id, taskId = it.taskId, message = it.message)
                 }
             continuation.resume(list)
         }
@@ -52,7 +63,7 @@ class DetailTaskRepository(
 
     override suspend fun addComment(comment: Comment) {
         CoroutineScope(Dispatchers.Unconfined).launch {
-            sqlDelight.insertCommentItem(comment.taskId!!.toLong(),
+            sqlDelight.insertCommentItem(comment.taskId!!,
                 comment.message!!.toString())
         }
     }
@@ -68,5 +79,4 @@ class DetailTaskRepository(
             sqlDelight.updateCommentId(comment.message.toString(), comment.id!!)
         }
     }
-
 }

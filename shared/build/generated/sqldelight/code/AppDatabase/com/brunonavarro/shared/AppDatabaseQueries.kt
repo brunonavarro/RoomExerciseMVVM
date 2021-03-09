@@ -5,7 +5,6 @@ import com.squareup.sqldelight.Transacter
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
-import kotlin.Long
 import kotlin.String
 
 interface AppDatabaseQueries : Transacter {
@@ -31,13 +30,32 @@ interface AppDatabaseQueries : Transacter {
 
   fun selectTaskId(id: Int): Query<Task>
 
-  fun <T : Any> selectAllComment(mapper: (
+  fun <T : Any> selectMaxItemTask(mapper: (
     id: Int,
-    taskId: Long,
+    title: String,
+    body: String,
+    isComplete: Boolean,
+    createDate: String,
+    finishDate: String
+  ) -> T): Query<T>
+
+  fun selectMaxItemTask(): Query<Task>
+
+  fun <T : Any> selectAllComment(taskId: Int, mapper: (
+    id: Int,
+    taskId: Int,
     message: String
   ) -> T): Query<T>
 
-  fun selectAllComment(): Query<Comment>
+  fun selectAllComment(taskId: Int): Query<Comment>
+
+  fun <T : Any> selectMaxItemComment(mapper: (
+    id: Int,
+    taskId: Int,
+    message: String
+  ) -> T): Query<T>
+
+  fun selectMaxItemComment(): Query<Comment>
 
   fun insertTaskItem(
     title: String,
@@ -60,7 +78,7 @@ interface AppDatabaseQueries : Transacter {
 
   fun deleteTask(id: Int)
 
-  fun insertCommentItem(taskId: Long, message: String)
+  fun insertCommentItem(taskId: Int, message: String)
 
   fun updateCommentId(message: String, id: Int)
 

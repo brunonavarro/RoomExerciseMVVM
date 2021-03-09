@@ -12,7 +12,6 @@ import com.squareup.sqldelight.internal.copyOnWriteList
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
-import kotlin.Long
 import kotlin.String
 import kotlin.collections.MutableList
 import kotlin.jvm.JvmField
@@ -71,7 +70,11 @@ private class AppDatabaseQueriesImpl(
 
   internal val selectTaskId: MutableList<Query<*>> = copyOnWriteList()
 
+  internal val selectMaxItemTask: MutableList<Query<*>> = copyOnWriteList()
+
   internal val selectAllComment: MutableList<Query<*>> = copyOnWriteList()
+
+  internal val selectMaxItemComment: MutableList<Query<*>> = copyOnWriteList()
 
   override fun <T : Any> selectAllTask(mapper: (
     id: Int,
@@ -114,20 +117,55 @@ private class AppDatabaseQueriesImpl(
 
   override fun selectTaskId(id: Int): Query<Task> = selectTaskId(id, ::Task)
 
-  override fun <T : Any> selectAllComment(mapper: (
+  override fun <T : Any> selectMaxItemTask(mapper: (
     id: Int,
-    taskId: Long,
-    message: String
-  ) -> T): Query<T> = Query(557932229, selectAllComment, driver, "AppDatabase.sq",
-      "selectAllComment", "SELECT * FROM comment ORDER BY id DESC") { cursor ->
+    title: String,
+    body: String,
+    isComplete: Boolean,
+    createDate: String,
+    finishDate: String
+  ) -> T): Query<T> = Query(-540559275, selectMaxItemTask, driver, "AppDatabase.sq",
+      "selectMaxItemTask", "SELECT * FROM task ORDER BY id DESC LIMIT 1") { cursor ->
     mapper(
       cursor.getLong(0)!!.toInt(),
-      cursor.getLong(1)!!,
+      cursor.getString(1)!!,
+      cursor.getString(2)!!,
+      cursor.getLong(3)!! == 1L,
+      cursor.getString(4)!!,
+      cursor.getString(5)!!
+    )
+  }
+
+  override fun selectMaxItemTask(): Query<Task> = selectMaxItemTask(::Task)
+
+  override fun <T : Any> selectAllComment(taskId: Int, mapper: (
+    id: Int,
+    taskId: Int,
+    message: String
+  ) -> T): Query<T> = SelectAllCommentQuery(taskId) { cursor ->
+    mapper(
+      cursor.getLong(0)!!.toInt(),
+      cursor.getLong(1)!!.toInt(),
       cursor.getString(2)!!
     )
   }
 
-  override fun selectAllComment(): Query<Comment> = selectAllComment(::Comment)
+  override fun selectAllComment(taskId: Int): Query<Comment> = selectAllComment(taskId, ::Comment)
+
+  override fun <T : Any> selectMaxItemComment(mapper: (
+    id: Int,
+    taskId: Int,
+    message: String
+  ) -> T): Query<T> = Query(518764943, selectMaxItemComment, driver, "AppDatabase.sq",
+      "selectMaxItemComment", "SELECT * FROM comment ORDER BY id DESC LIMIT 1") { cursor ->
+    mapper(
+      cursor.getLong(0)!!.toInt(),
+      cursor.getLong(1)!!.toInt(),
+      cursor.getString(2)!!
+    )
+  }
+
+  override fun selectMaxItemComment(): Query<Comment> = selectMaxItemComment(::Comment)
 
   override fun insertTaskItem(
     title: String,
@@ -147,7 +185,7 @@ private class AppDatabaseQueriesImpl(
       bindString(5, finishDate)
     }
     notifyQueries(990919164, {database.appDatabaseQueries.selectAllTask +
-        database.appDatabaseQueries.selectTaskId})
+        database.appDatabaseQueries.selectTaskId + database.appDatabaseQueries.selectMaxItemTask})
   }
 
   override fun updateTaskId(
@@ -170,7 +208,7 @@ private class AppDatabaseQueriesImpl(
       bindString(6, finishDate)
     }
     notifyQueries(-786031532, {database.appDatabaseQueries.selectAllTask +
-        database.appDatabaseQueries.selectTaskId})
+        database.appDatabaseQueries.selectTaskId + database.appDatabaseQueries.selectMaxItemTask})
   }
 
   override fun updateIsCompleteTaskId(isComplete: Boolean, id: Int) {
@@ -179,7 +217,7 @@ private class AppDatabaseQueriesImpl(
       bindLong(2, id.toLong())
     }
     notifyQueries(474855863, {database.appDatabaseQueries.selectAllTask +
-        database.appDatabaseQueries.selectTaskId})
+        database.appDatabaseQueries.selectTaskId + database.appDatabaseQueries.selectMaxItemTask})
   }
 
   override fun deleteTask(id: Int) {
@@ -187,18 +225,19 @@ private class AppDatabaseQueriesImpl(
       bindLong(1, id.toLong())
     }
     notifyQueries(1751322939, {database.appDatabaseQueries.selectAllTask +
-        database.appDatabaseQueries.selectTaskId})
+        database.appDatabaseQueries.selectTaskId + database.appDatabaseQueries.selectMaxItemTask})
   }
 
-  override fun insertCommentItem(taskId: Long, message: String) {
+  override fun insertCommentItem(taskId: Int, message: String) {
     driver.execute(-738332722, """
     |INSERT OR REPLACE INTO comment (taskId, message)
     |VALUES (?, ?)
     """.trimMargin(), 2) {
-      bindLong(1, taskId)
+      bindLong(1, taskId.toLong())
       bindString(2, message)
     }
-    notifyQueries(-738332722, {database.appDatabaseQueries.selectAllComment})
+    notifyQueries(-738332722, {database.appDatabaseQueries.selectAllComment +
+        database.appDatabaseQueries.selectMaxItemComment})
   }
 
   override fun updateCommentId(message: String, id: Int) {
@@ -206,14 +245,16 @@ private class AppDatabaseQueriesImpl(
       bindString(1, message)
       bindLong(2, id.toLong())
     }
-    notifyQueries(2136264838, {database.appDatabaseQueries.selectAllComment})
+    notifyQueries(2136264838, {database.appDatabaseQueries.selectAllComment +
+        database.appDatabaseQueries.selectMaxItemComment})
   }
 
   override fun deleteComment(id: Int) {
     driver.execute(886697705, """DELETE FROM comment WHERE id = ?""", 1) {
       bindLong(1, id.toLong())
     }
-    notifyQueries(886697705, {database.appDatabaseQueries.selectAllComment})
+    notifyQueries(886697705, {database.appDatabaseQueries.selectAllComment +
+        database.appDatabaseQueries.selectMaxItemComment})
   }
 
   private inner class SelectTaskIdQuery<out T : Any>(
@@ -227,5 +268,18 @@ private class AppDatabaseQueriesImpl(
     }
 
     override fun toString(): String = "AppDatabase.sq:selectTaskId"
+  }
+
+  private inner class SelectAllCommentQuery<out T : Any>(
+    @JvmField
+    val taskId: Int,
+    mapper: (SqlCursor) -> T
+  ) : Query<T>(selectAllComment, mapper) {
+    override fun execute(): SqlCursor = driver.executeQuery(557932229,
+        """SELECT * FROM comment WHERE taskId = ? ORDER BY id DESC""", 1) {
+      bindLong(1, taskId.toLong())
+    }
+
+    override fun toString(): String = "AppDatabase.sq:selectAllComment"
   }
 }

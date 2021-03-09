@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.brunonavarro.smiledu.data.entity.Comment
+import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ItemCommentBinding
 import com.brunonavarro.smiledu.ui.adapters.detailTask.holder.CommentHolder
 
@@ -14,6 +15,28 @@ class CommentAdapter(
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var itemList = mutableListOf<Comment>()
+
+    fun addItem(position: Int, comment: Comment){
+        itemList.add(position, comment)
+        notifyItemInserted(position)
+    }
+
+    fun removeItem(position: Int, comment: Comment){
+        itemList.remove(comment)
+        notifyItemRemoved(position)
+    }
+
+    fun updateItem(position: Int, comment: Comment){
+        itemList.forEach {
+            if (it.id == comment.id){
+                it.id = comment.id
+                it.taskId = comment.taskId
+                it.message = comment.message
+            }
+        }
+        notifyItemChanged(position)
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return CommentHolder(

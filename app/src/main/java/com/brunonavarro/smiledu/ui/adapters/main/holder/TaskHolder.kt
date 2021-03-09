@@ -19,7 +19,7 @@ class TaskHolder(
         context = binding.root.context
         binding.task = data
 
-        val orderNumber = (data.id ?: 0)
+        val orderNumber = data.id ?: 0
 
         binding.orderNumber.text = if (orderNumber >= 10) orderNumber.toString() else "0$orderNumber"
 

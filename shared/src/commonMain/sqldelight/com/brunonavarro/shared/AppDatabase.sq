@@ -9,7 +9,7 @@ CREATE TABLE task (
 
 CREATE TABLE comment (
   id INTEGER as Int NOT NULL PRIMARY KEY AUTOINCREMENT,
-  taskId INTEGER NOT NULL,
+  taskId INTEGER as Int NOT NULL,
   message TEXT NOT NULL,
   FOREIGN KEY (taskId) REFERENCES task(id)
 );
@@ -23,6 +23,9 @@ SELECT * FROM task ORDER BY id DESC;
 
 selectTaskId:
 SELECT * FROM task WHERE id = ?;
+
+selectMaxItemTask:
+SELECT * FROM task ORDER BY id DESC LIMIT 1;
 
 updateTaskId:
 INSERT OR REPLACE INTO task (id, title, body, isComplete, createDate, finishDate)
@@ -39,7 +42,10 @@ INSERT OR REPLACE INTO comment (taskId, message)
 VALUES (?, ?);
 
 selectAllComment:
-SELECT * FROM comment ORDER BY id DESC;
+SELECT * FROM comment WHERE taskId = ? ORDER BY id DESC;
+
+selectMaxItemComment:
+SELECT * FROM comment ORDER BY id DESC LIMIT 1;
 
 updateCommentId:
 UPDATE comment SET message = ? WHERE id = ?;

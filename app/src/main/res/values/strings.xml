@@ -52,4 +52,8 @@
     <string name="dialog_delete_comment_message">Recuerde que no se podrá recuperar su comentario.</string>
     <string name="error_empty_comment">No puede agregar un comentario vacio</string>
     <string name="diary_value">Agenda (%1s)</string>
+    <string name="delete_comment_success">Se eliminó tu comentario</string>
+    <string name="delete_task_success">Se eliminó la tarea.</string>
+    <string name="update_comment_success">Se actualizó tu comentario</string>
+    <string name="update_task_success">Se acualizó la tarea.</string>
 </resources>

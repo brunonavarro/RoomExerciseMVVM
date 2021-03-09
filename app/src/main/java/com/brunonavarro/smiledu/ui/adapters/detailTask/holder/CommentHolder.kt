@@ -29,7 +29,7 @@ class CommentHolder(
             popup.setOnMenuItemClickListener {
                 when(it.itemId){
                     R.id.edit_comment -> {
-                        listener.onClickEdit(data, true)
+                        listener.onClickEdit(data, true, adapterPosition)
                     }
                     R.id.remove_comment -> {
                         listener.onClickDelete(data, adapterPosition)
