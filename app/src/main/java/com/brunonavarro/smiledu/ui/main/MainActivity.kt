@@ -1,9 +1,8 @@
-package com.brunonavarro.smiledu.ui.main
+ package com.brunonavarro.smiledu.ui.main
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
@@ -17,14 +16,22 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.badoo.reaktive.disposable.Disposable
+import com.badoo.reaktive.observable.observeOn
+import com.badoo.reaktive.scheduler.mainScheduler
+import com.brunonavarro.shared.AppDatabase
+import com.brunonavarro.shared.DatabaseDriverFactory
+import com.brunonavarro.shared.model.Task
+import com.brunonavarro.shared.repository.taskRepository.TaskRepository
+import com.brunonavarro.shared.viewModel.ViewModelBinding
+import com.brunonavarro.shared.viewModel.main.MainListener
 import com.brunonavarro.smiledu.R
-import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ActivityMainBinding
 import com.brunonavarro.smiledu.ui.adapters.main.adapter.TaskAdapter
 import com.brunonavarro.smiledu.ui.adapters.main.adapter.TaskListener
 import com.brunonavarro.smiledu.util.Constants
 import com.brunonavarro.smiledu.util.datePicker.DatePickerFragment
-import com.brunonavarro.smiledu.viewModel.main.MainViewModel
+import com.brunonavarro.shared.viewModel.main.MainViewModel
 import com.brunonavarro.smiledu.viewModel.main.MainViewModelFactory
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -35,19 +42,22 @@ import java.util.*
 class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListener {
 
     override val kodein by kodein()
-    lateinit var mainViewModel: MainViewModel
-    private val factory: MainViewModelFactory by instance()
+
+    private val mainViewModel: MainViewModel by instance()
 
     lateinit var binding: ActivityMainBinding
 
+    val viewModelBinding: ViewModelBinding = ViewModelBinding()
+
     var taskAdapterView =  MutableLiveData<TaskAdapter>()
     var isFilterActive = false
+
+    var itemListAdapterCopy = mutableListOf<Task>()
 
     var updateObservable = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         mainViewModel.mainListener = this
@@ -63,25 +73,30 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
     }
 
     fun observable(){
-        mainViewModel.taskList.observeForever {
-            if (!it.isNullOrEmpty()){
-                binding.emptyList.visibility = View.GONE
-                it.sortByDescending { it.id }
-                if (updateObservable) {
-                    taskAdapterView.value?.itemList = it
-                    taskAdapterView.value?.notifyDataSetChanged()
-                    updateObservable = false
-                }
-            }else {
-                binding.emptyList.visibility = View.VISIBLE
-                if (updateObservable) {
-                    taskAdapterView.value?.itemList = it
-                    taskAdapterView.value?.notifyDataSetChanged()
-                    updateObservable = false
-                }
+        viewModelBinding.subscribe(mainViewModel.taskList.observeOn(mainScheduler), onNext = ::observerTaskList)
+    }
+
+    private fun observerTaskList(taskList: MutableList<Task>) {
+
+        if (!taskList.isNullOrEmpty()){
+            binding.emptyList.visibility = View.GONE
+            taskList.sortByDescending { it.id }
+            if (updateObservable) {
+                taskAdapterView.value?.itemList = taskList
+                taskAdapterView.value?.notifyDataSetChanged()
+                itemListAdapterCopy = taskList
+                updateObservable = false
             }
-            binding.titleToolBar.text = getString(R.string.diary_value, it.size.toString())
+        }else {
+            binding.emptyList.visibility = View.VISIBLE
+            if (updateObservable) {
+                taskAdapterView.value?.itemList = taskList
+                taskAdapterView.value?.notifyDataSetChanged()
+                itemListAdapterCopy = taskList
+                updateObservable = false
+            }
         }
+        binding.titleToolBar.text = getString(R.string.diary_value, taskList.size.toString())
     }
 
     fun configAdapter(){
@@ -123,13 +138,13 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
 
     fun filter(){
         var itemsFilter = mutableListOf<Task>()
-        val itemListAdapterCopy = mainViewModel.taskList.value
+//        val itemListAdapterCopy = mainViewModel.taskList
 
         if (!isFilterActive){
             taskAdapterView.value?.itemList = itemListAdapterCopy!!
             taskAdapterView.value?.itemList?.sortByDescending { it.id }
         }else{
-            itemsFilter = taskAdapterView.value?.itemList?.filter { it.isComplete }?.toMutableList()!!
+            itemsFilter = taskAdapterView.value?.itemList?.filter { (it.isComplete ?: false) }?.toMutableList()!!
             taskAdapterView.value?.itemList = itemsFilter
             taskAdapterView.value?.itemList?.sortByDescending { it.id }
         }
@@ -268,5 +283,10 @@ class MainActivity : AppCompatActivity() , KodeinAware, MainListener, TaskListen
         super.onRestart()
         updateObservable = true
         mainViewModel.getTasks()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelBinding.dispose()
     }
 }

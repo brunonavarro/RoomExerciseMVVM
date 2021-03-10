@@ -3,7 +3,7 @@ package com.brunonavarro.smiledu.ui.adapters.main.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.brunonavarro.smiledu.data.entity.Task
+import com.brunonavarro.shared.model.Task
 import com.brunonavarro.smiledu.databinding.ItemTaskBinding
 import com.brunonavarro.smiledu.ui.adapters.main.holder.TaskHolder
 

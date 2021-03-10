@@ -5,8 +5,8 @@ import com.brunonavarro.shared.AppDatabase
 import com.brunonavarro.shared.DatabaseDriverFactory
 import com.brunonavarro.shared.repository.detailRepository.DetailTaskRepository
 import com.brunonavarro.shared.repository.taskRepository.TaskRepository
-import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModelFactory
-import com.brunonavarro.smiledu.viewModel.main.MainViewModelFactory
+import com.brunonavarro.shared.viewModel.detailTask.DetailTaskViewModel
+import com.brunonavarro.shared.viewModel.main.MainViewModel
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -27,9 +27,9 @@ class Application: Application(), KodeinAware {
         bind() from singleton { database.appDatabaseQueries }
 
         bind() from singleton { TaskRepository(instance()) }
-        bind() from provider { MainViewModelFactory(instance()) }
+        bind() from provider { MainViewModel(instance()) }
 
         bind() from singleton { DetailTaskRepository(instance()) }
-        bind() from provider { DetailTaskViewModelFactory(instance()) }
+        bind() from provider { DetailTaskViewModel(instance()) }
     }
 }

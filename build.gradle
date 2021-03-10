@@ -22,6 +22,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url = "https://dl.bintray.com/icerockdev/moko" }
+        maven {
+            url  "https://dl.bintray.com/badoo/maven"
+        }
         jcenter()
     }
 }

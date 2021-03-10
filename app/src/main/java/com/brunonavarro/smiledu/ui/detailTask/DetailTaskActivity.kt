@@ -12,17 +12,25 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.badoo.reaktive.observable.observeOn
+import com.badoo.reaktive.scheduler.mainScheduler
+import com.brunonavarro.shared.model.Comment
+import com.brunonavarro.shared.model.Task
+import com.brunonavarro.shared.repository.detailRepository.DetailTaskRepository
+import com.brunonavarro.shared.viewModel.ViewModelBinding
+import com.brunonavarro.shared.viewModel.detailTask.DetailTaskListener
+import com.brunonavarro.shared.viewModel.detailTask.DetailTaskViewModel
 import com.brunonavarro.smiledu.R
-import com.brunonavarro.smiledu.data.entity.Comment
-import com.brunonavarro.smiledu.data.entity.Task
+//import com.brunonavarro.smiledu.data.entity.Comment
+//import com.brunonavarro.smiledu.data.entity.Task
 import com.brunonavarro.smiledu.databinding.ActivityDetailTaskBinding
 import com.brunonavarro.smiledu.ui.adapters.detailTask.adapter.CommentAdapter
 import com.brunonavarro.smiledu.ui.adapters.detailTask.adapter.CommentListener
 import com.brunonavarro.smiledu.util.Constants
 import com.brunonavarro.smiledu.util.datePicker.DatePickerFragment
 import com.brunonavarro.smiledu.util.validDateInput
-import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModel
-import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModelFactory
+//import com.brunonavarro.shared.viewModel.detailTask.DetailTaskViewModel
+//import com.brunonavarro.smiledu.viewModel.detailTask.DetailTaskViewModelFactory
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -31,16 +39,19 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         DetailTaskListener, CommentListener {
 
     override val kodein by kodein()
-    lateinit var mainViewModel: DetailTaskViewModel
-    private val factory: DetailTaskViewModelFactory by instance()
+    private val mainViewModel: DetailTaskViewModel by instance()
 
     lateinit var binding: ActivityDetailTaskBinding
+
+    val viewModelBinding: ViewModelBinding = ViewModelBinding()
 
     var commentAdapterView =  MutableLiveData<CommentAdapter>()
 
     var taskId: Int? = null
 
     lateinit var currentTask: Task
+    lateinit var currentComments: MutableList<Comment>
+    lateinit var currentMaxComment: Comment
     var isEditComment = MutableLiveData<Boolean>(false)
     var selectedComment = MutableLiveData<Comment>()
     var itemPosition = -1
@@ -48,8 +59,6 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_detail_task)
-        mainViewModel = ViewModelProvider(this, factory).get(DetailTaskViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail_task)
         binding.lifecycleOwner = this
         mainViewModel.listener = this
@@ -101,7 +110,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                     }
                     isEditComment.value = false
                     updateObservable = false
-                    mainViewModel.comments.value = commentAdapterView.value?.itemList
+                    mainViewModel.setComments(commentAdapterView.value?.itemList!!)
                     binding.commentEditText.setText("")
                 }else{
                     errorMessage(null, getString(R.string.error_empty_comment))
@@ -133,7 +142,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                 }
                 isEditComment.value = false
                 updateObservable = false
-                mainViewModel.comments.value = commentAdapterView.value?.itemList
+                mainViewModel.setComments(commentAdapterView.value?.itemList!!)
                 binding.commentEditText.setText("")
             }else{
                 errorMessage(null, getString(R.string.error_empty_comment))
@@ -142,21 +151,25 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
     }
 
     private fun observables() {
-        mainViewModel.task.observeForever {
-            if (it != null){
-                currentTask = it
-                showData(it)
-            }
-        }
+        viewModelBinding.subscribe(mainViewModel.task.observeOn(mainScheduler),
+            onNext = ::observerTask)
+        viewModelBinding.subscribe(mainViewModel.comments.observeOn(mainScheduler),
+            onNext = ::observerComment)
+    }
 
-        mainViewModel.comments.observeForever {
-            if (!it.isNullOrEmpty() && updateObservable){
-                commentAdapterView.value?.itemList = it
-                commentAdapterView.value?.notifyDataSetChanged()
-                updateObservable = false
-            }
-            updateCountComment(it.size)
+    private fun observerComment(mutableList: MutableList<Comment>) {
+        if (!mutableList.isNullOrEmpty() && updateObservable){
+            currentComments = mutableList
+            commentAdapterView.value?.itemList = mutableList
+            commentAdapterView.value?.notifyDataSetChanged()
+            updateObservable = false
         }
+        updateCountComment(mutableList.size)
+    }
+
+    private fun observerTask(task: Task) {
+        currentTask = task
+        showData(task)
     }
 
     private fun updateCountComment(size: Int) {
@@ -241,7 +254,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
                 task.isComplete = currentTask.isComplete
 
                 currentTask = task
-                mainViewModel.task.value = currentTask
+                mainViewModel.setTask(currentTask)
                 mainViewModel.updateTask(task)
                 dialogTask?.dismiss()
             }
@@ -266,7 +279,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         val acceptButton: Button = showView.findViewById(R.id.acceptButton)
         val dialogTitle: TextView = showView.findViewById(R.id.dialogTitle)
 
-        dialogTitle.text = getString(R.string.dialog_delete_title_value, mainViewModel.task.value?.title)
+        dialogTitle.text = getString(R.string.dialog_delete_title_value, currentTask.title)
 
         cancelButton.setOnClickListener { dialogTask?.dismiss() }
 
@@ -328,7 +341,8 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         cancelButton.setOnClickListener { dialogTask?.dismiss() }
 
         acceptButton.setOnClickListener {
-            mainViewModel.comments.value?.remove(comment)
+            currentComments.remove(comment)
+            mainViewModel.setComments(currentComments)
             commentAdapterView.value?.itemList?.remove(comment)
             mainViewModel.deleteComment(comment)
             commentAdapterView.value?.removeItem(position, comment)
@@ -416,5 +430,10 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
     override fun onStart() {
         super.onStart()
         updateObservable = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelBinding.dispose()
     }
 }

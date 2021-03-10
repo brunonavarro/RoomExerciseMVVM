@@ -4,8 +4,7 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.brunonavarro.smiledu.data.entity.Comment
-import com.brunonavarro.smiledu.data.entity.Task
+import com.brunonavarro.shared.model.Comment
 import com.brunonavarro.smiledu.databinding.ItemCommentBinding
 import com.brunonavarro.smiledu.ui.adapters.detailTask.holder.CommentHolder
 

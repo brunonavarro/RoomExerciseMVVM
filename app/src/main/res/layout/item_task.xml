@@ -5,7 +5,7 @@
     <data>
         <variable
             name="task"
-            type="com.brunonavarro.smiledu.data.entity.Task" />
+            type="com.brunonavarro.shared.model.Task" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,7 +57,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="5dp"
                     android:maxLines="1"
-                    android:text="@{task.title}"
                     app:layout_constraintEnd_toStartOf="@+id/isCompleteCheckBox"
                     app:layout_constraintStart_toStartOf="@+id/guideline2"
                     app:layout_constraintTop_toTopOf="parent"
@@ -72,7 +71,6 @@
                     android:layout_marginEnd="10dp"
                     android:maxLines="2"
                     android:lines="2"
-                    android:text="@{task.body}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/activityTitle"
                     app:layout_constraintTop_toBottomOf="@+id/activityTitle"
@@ -100,7 +98,6 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="10dp"
                     android:maxLines="2"
-                    android:text="@{@string/activity_finish_value(task.finishDate)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/activityBody"
                     app:layout_constraintTop_toBottomOf="@+id/activityBody"

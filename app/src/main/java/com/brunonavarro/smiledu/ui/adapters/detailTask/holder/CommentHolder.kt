@@ -5,8 +5,8 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.brunonavarro.shared.model.Comment
 import com.brunonavarro.smiledu.R
-import com.brunonavarro.smiledu.data.entity.Comment
 import com.brunonavarro.smiledu.databinding.ItemCommentBinding
 import com.brunonavarro.smiledu.ui.adapters.detailTask.adapter.CommentListener
 
@@ -20,7 +20,9 @@ class CommentHolder(
 
     fun bind(data: Comment){
         context = binding.root.context
-        binding.setComment(data)
+//        binding.setComment(data)
+
+        binding.comment.text = data.message
 
         binding.moreOptions.setOnClickListener {
             val popup = PopupMenu(activity, binding.moreOptions, Gravity.START)

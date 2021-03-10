@@ -30,6 +30,12 @@ kotlin {
             dependencies{
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+                implementation("com.badoo.reaktive:reaktive:1.1.18")
+//                implementation ("com.badoo.reaktive:reaktive:1.1.18")
+//                implementation ("com.badoo.reaktive:reaktive-annotations:1.1.18")
+//                implementation ("com.badoo.reaktive:coroutines-interop:1.1.18")
+                // MOKO - MVVM
+//                implementation("dev.icerock.moko:mvvm:1.4.21")
                 implementation("io.ktor:ktor-client-core:1.4.0")
 //                implementation("io.ktor:ktor-client-json:1.4.0")
 //                implementation("io.ktor:ktor-client-logging:1.4.0")
@@ -42,6 +48,8 @@ kotlin {
                 implementation(kotlin("stdlib"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
                 implementation("io.ktor:ktor-client-android:1.4.0")
+                // MOKO - MVVM
+//                implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 //                implementation("io.ktor:ktor-client-core-jvm:1.4.0")
 //                implementation("io.ktor:ktor-client-json-jvm:1.4.0")
 //                implementation("io.ktor:ktor-client-logging-jvm:1.4.0")
@@ -84,3 +92,4 @@ android {
     }
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 }
+

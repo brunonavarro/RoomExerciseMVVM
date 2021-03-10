@@ -1,21 +1,21 @@
-package com.brunonavarro.smiledu.viewModel.main
+package com.brunonavarro.shared.viewModel.main
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.publish.PublishSubject
+import com.brunonavarro.shared.model.Task
 import com.brunonavarro.shared.repository.taskRepository.TaskRepository
-import com.brunonavarro.smiledu.data.entity.Comment
-import com.brunonavarro.smiledu.data.entity.Task
-import com.brunonavarro.smiledu.ui.main.MainListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private var taskRepository: TaskRepository
-): ViewModel() {
+) {
 
-    var taskList = MutableLiveData<MutableList<Task>>()
-    val maxTask = MutableLiveData<Task>()
+    private var _taskList = PublishSubject<MutableList<Task>>()
+    var taskList: Observable<MutableList<Task>> = _taskList
+    private val _maxTask = PublishSubject<Task>()
+    var maxTask: Observable<Task> = _maxTask
 
     var mainListener: MainListener? = null
 
@@ -31,7 +31,7 @@ class MainViewModel(
                 taskValue.add(Task(it.id, it.title, it.body,
                     it.isComplete ?: false, it.createDate, it.finishDate))
             }
-            taskList.postValue(taskValue)
+            _taskList.onNext(taskValue)
             mainListener?.showProgressBar(false)
         }
     }
@@ -48,7 +48,7 @@ class MainViewModel(
                 taskValue.createDate = it.createDate
                 taskValue.finishDate = it.finishDate
             }
-            maxTask.postValue(taskValue)
+            _maxTask.onNext(taskValue)
             mainListener?.createTaskSuccess(taskValue)
             mainListener?.showProgressBar(false)
         }

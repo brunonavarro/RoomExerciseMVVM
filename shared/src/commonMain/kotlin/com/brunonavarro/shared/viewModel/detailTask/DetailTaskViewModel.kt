@@ -1,27 +1,43 @@
-package com.brunonavarro.smiledu.viewModel.detailTask
+package com.brunonavarro.shared.viewModel.detailTask
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+
+import com.badoo.reaktive.observable.Observable
+import com.badoo.reaktive.subject.publish.PublishSubject
+import com.brunonavarro.shared.model.Comment
+import com.brunonavarro.shared.model.Task
 import com.brunonavarro.shared.repository.detailRepository.DetailTaskRepository
-import com.brunonavarro.smiledu.data.entity.Comment
-import com.brunonavarro.smiledu.data.entity.Task
-import com.brunonavarro.smiledu.ui.detailTask.DetailTaskListener
-import com.brunonavarro.smiledu.util.Constants
+import com.brunonavarro.shared.util.Constants
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DetailTaskViewModel(
     private var detailTaskRepository: DetailTaskRepository
-): ViewModel() {
+) {
 
-    var task = MutableLiveData<Task>()
-    var comments = MutableLiveData<MutableList<Comment>>()
-    var maxComment = MutableLiveData<Comment>()
+    private var _task = PublishSubject<Task>()
+    var task: Observable<Task> = _task
+    private var _comments = PublishSubject<MutableList<Comment>>()
+    var comments: Observable<MutableList<Comment>> = _comments
+    private var _maxComment = PublishSubject<Comment>()
+    var maxComment: Observable<Comment> = _maxComment
 
     var listener: DetailTaskListener? = null
 
     var taskId: Int? = null
+
+    fun setComments(comments: MutableList<Comment>){
+        _comments.onNext(comments)
+    }
+
+    fun setMaxComment(comment: Comment){
+        _maxComment.onNext(comment)
+    }
+
+    fun setTask(task: Task){
+        _task.onNext(task)
+    }
 
     fun getTask(){
         CoroutineScope(Dispatchers.Main).launch {
@@ -36,7 +52,7 @@ class DetailTaskViewModel(
                 taskData.finishDate = it.finishDate
             }
 
-            task.postValue(taskData)
+            _task.onNext(taskData)
             listener?.showProgressBar(false)
         }
     }
@@ -50,7 +66,7 @@ class DetailTaskViewModel(
                 commentValues.taskId = it.taskId
                 commentValues.message = it.message
             }
-            maxComment.postValue(commentValues)
+            _maxComment.onNext(commentValues)
             listener?.messageSuccess(Constants.SUCCESS_ADD_COMMENT, commentValues)
             listener?.showProgressBar(false)
         }
@@ -59,7 +75,7 @@ class DetailTaskViewModel(
     fun deleteTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            val taskValue = com.brunonavarro.shared.model.Task()
+            val taskValue = Task()
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
@@ -75,7 +91,7 @@ class DetailTaskViewModel(
     fun updateTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            val taskValue = com.brunonavarro.shared.model.Task()
+            val taskValue = Task()
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
@@ -95,7 +111,7 @@ class DetailTaskViewModel(
             detailTaskRepository.getComments(taskId!!).toMutableList().forEach {
                 commentValues.add(Comment(it.id, it.taskId, it.message))
             }
-            comments.postValue(commentValues)
+            _comments.onNext(commentValues)
             listener?.showProgressBar(false)
         }
     }
@@ -103,7 +119,7 @@ class DetailTaskViewModel(
     fun addComment(comment: Comment){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            val commentValue = com.brunonavarro.shared.model.Comment()
+            val commentValue = Comment()
             commentValue.id = comment.id
             commentValue.taskId = comment.taskId
             commentValue.message = comment.message
@@ -116,7 +132,7 @@ class DetailTaskViewModel(
     fun deleteComment(comment: Comment){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            val commentValue = com.brunonavarro.shared.model.Comment()
+            val commentValue = Comment()
             commentValue.id = comment.id
             commentValue.taskId = comment.taskId
             commentValue.message = comment.message
@@ -129,7 +145,7 @@ class DetailTaskViewModel(
     fun updateComment(comment: Comment){
         CoroutineScope(Dispatchers.Main).launch {
             listener?.showProgressBar(true)
-            val commentValue = com.brunonavarro.shared.model.Comment()
+            val commentValue = Comment()
             commentValue.id = comment.id
             commentValue.taskId = comment.taskId
             commentValue.message = comment.message
