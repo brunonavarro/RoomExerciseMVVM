@@ -1,6 +1,6 @@
 package com.brunonavarro.smiledu.ui.detailTask
 
-import com.brunonavarro.smiledu.data.entity.Comment
+import com.brunonavarro.shared.model.Comment
 
 interface DetailTaskListener {
     fun showProgressBar(isShow: Boolean)

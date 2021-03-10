@@ -32,7 +32,6 @@ import com.brunonavarro.smiledu.ui.adapters.main.adapter.TaskListener
 import com.brunonavarro.smiledu.util.Constants
 import com.brunonavarro.smiledu.util.datePicker.DatePickerFragment
 import com.brunonavarro.shared.viewModel.main.MainViewModel
-import com.brunonavarro.smiledu.viewModel.main.MainViewModelFactory
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance

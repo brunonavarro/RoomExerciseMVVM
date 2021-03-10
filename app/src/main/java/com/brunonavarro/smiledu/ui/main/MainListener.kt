@@ -1,6 +1,6 @@
 package com.brunonavarro.smiledu.ui.main
 
-import com.brunonavarro.smiledu.data.entity.Task
+import com.brunonavarro.shared.model.Task
 
 interface MainListener {
     fun showProgressBar(isShow: Boolean)

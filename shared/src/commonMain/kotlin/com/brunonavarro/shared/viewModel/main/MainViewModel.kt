@@ -57,7 +57,7 @@ class MainViewModel(
     fun addTask(task: Task){
         CoroutineScope(Dispatchers.Main).launch {
             mainListener?.showProgressBar(true)
-            val taskValue = com.brunonavarro.shared.model.Task()
+            val taskValue = Task()
             taskValue.id = task.id
             taskValue.body = task.body
             taskValue.title = task.title
