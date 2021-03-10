@@ -268,7 +268,7 @@ class DetailTaskActivity : AppCompatActivity() , KodeinAware,
         dialogTask.show()
     }
 
-    fun showDialogDeleteTask(){
+    private fun showDialogDeleteTask(){
         var dialogTask: AlertDialog? = null
         val builder = AlertDialog.Builder(this)
 
